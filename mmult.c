@@ -43,8 +43,9 @@ int main ()
      t = clock();
     Matrix_Mul (c, a, b, SIZE);
     t = clock()-t;
-    printf("without parallelazation time: %lf sec\n",t/(float)CLOCKS_PER_SEC);
+    printf("%lf, without parallelazation time: %lf sec\n",c[0],t/(float)CLOCKS_PER_SEC);
      }
+     for ( int j = 0; j < SIZE*SIZE; j++ ) c[j] = 0;
     t = clock();
  #pragma acc data copyin (a[0:SIZE*SIZE], b[0:SIZE*SIZE]) copyout (c[0:SIZE*SIZE])
  {
