@@ -8,6 +8,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 endif()
 ############
 
+########Setting#######
+#set(...)
+######################
+
 #######Targets#########
 set(TARGETS foo)
 #...
