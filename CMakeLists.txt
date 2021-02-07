@@ -15,5 +15,5 @@ set(TARGETS foo)
 
 add_executable(foo main.cpp IRProvider.cpp)
 
-install( TARGETS ${TARGETS}
+#install( TARGETS ${TARGETS}
          RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin/ )
