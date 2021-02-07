@@ -1,8 +1,9 @@
+#pragma once
 #include <iostream>
 #include <cmath>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+//#include <stdlib.h>
+//#include <string.h>
 
 using namespace std;
 namespace SiriusFM {
@@ -90,7 +91,7 @@ class CIR {
 
 };
 
-enum class CcyE : int {
+/*enum class CcyE : int {
     USD = 0,
     EUR = 1,
     GBP = 2,
@@ -166,7 +167,7 @@ private:
 public:
     IRProvider(char const* a_file);
     double r(CcyE a_ccy, double a_t) { return m_IRs[(int)a_ccy]; }
-};
+};*/
     
 };
 

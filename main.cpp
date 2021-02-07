@@ -1,4 +1,5 @@
 #include "Diffusion.h"
+#include "IRProviderConst.h"
 
 using namespace SiriusFM;
 
