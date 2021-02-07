@@ -19,5 +19,4 @@ endif()
 
 add_executable(foo main.cpp IRProvider.cpp)
 
-##install( TARGETS ${TARGETS}
-#         RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin/ )
+
