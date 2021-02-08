@@ -66,8 +66,8 @@ inline void MCEngine <Diffusion,
                                   double mu1 = 0.;
                                   if(a_isRN) {
                                       double delta_r = a_bp->r(a_B, y) - a_ap->r(a_A, y);
-                                      mu0 = delta_r + Sp0;
-                                      mu1 = delta_r + Sp1;
+                                      mu0 = delta_r * Sp0;//+
+                                      mu1 = delta_r * Sp1;
                                       
                                 }
                               else {
