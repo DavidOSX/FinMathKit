@@ -10,6 +10,6 @@ private:
     
 public:
     IRProvider(char const* a_file);
-    double r(CcyE a_ccy, double a_t) { return m_IRs[(int)a_ccy]; }
+    double r(CcyE a_ccy, double a_t) const { return m_IRs[(int)a_ccy]; }
 };
     

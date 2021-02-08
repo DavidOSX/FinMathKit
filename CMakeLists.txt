@@ -9,7 +9,7 @@ endif()
 ############
 
 ########Setting#######
-##set(...)
+set(CMAKE_CXX_COMPILER /bin/clang++)
 ######################
 
 #######Targets#########
