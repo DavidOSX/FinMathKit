@@ -41,7 +41,6 @@ int main(const int argc, const char* argv[]) {
     double const* paths = get<2>(res);
     double est = 0., est2 = 0.;
     int nvp = 0;
-    cout << P1 << endl;
     for(int p = 0; p < P1; ++p) {
         double const* path = paths + p*L1;
         double st = path[L1-1];
