@@ -17,17 +17,17 @@ inline double YearFrac(time_t t) {
 
 
 
-/*template <typename Diffusion, 
+template <typename Diffusion, 
           typename AProvider, 
           typename BProvider, 
           typename AssetClassA, 
-          typename AssetClassB> */ 
+          typename AssetClassB>  
 template<bool a_isRN>
-inline void MCEngine /*<Diffusion,
+inline void MCEngine <Diffusion,
                       AProvider, 
                       BProvider, 
                       AssetClassA, 
-                      AssetClassB>*/ ::
+                      AssetClassB> ::
                                        Simulate(time_t           a_t0, 
                                                time_t           a_T, 
                                                int              a_tau_min,

@@ -9,11 +9,11 @@ using namespace std;
 
 namespace SiriusFM {
 
-/*template <typename Diffusion, 
+template <typename Diffusion, 
           typename AProvider, 
           typename BProvider, 
           typename AssetClassA, 
-          typename AssetClassB>*/ class MCEngine {// 
+          typename AssetClassB> class MCEngine {// 
 private:
     long const         m_MaxL;
     long const         m_MaxP;

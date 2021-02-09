@@ -8,7 +8,7 @@ using namespace std;
 int main(const int argc, const char* argv[]) {
     CcyE c1 = CcyE::USD;
     CcyE c2 = CcyE::CHF;
-    Diffusion_GBM diff = Diffusion_GBM(0, 0.1);
+    //Diffusion_GBM diff = Diffusion_GBM(0, 0.1);
     //IRMode IRM = IRM::Const;
     if(argc < 8) {
         cerr << "not enough params\n";
@@ -29,13 +29,13 @@ int main(const int argc, const char* argv[]) {
     long T_days = atol(argv[5]);
     int tau_min = atoi(argv[6]);
     long P = atol(argv[7]);
-    
+     Diffusion_GBM diff = Diffusion_GBM(mu, sigma);
     time_t t0 = time(nullptr);
     time_t T = t0 + T_days*86400;
     double Ty = double(T_days)/365.25;
     
     
-    MCEngine/*<decltype(diff),decltype(irp), decltype(irp), decltype(c1), decltype(c2)>*/ mce(20'000, 20'000);
+    MCEngine<decltype(diff),decltype(irp), decltype(irp), decltype(c1), decltype(c2)> mce(20'000, 20'000);
     mce.Simulate<false>(t0, T, tau_min, s0, P, &diff, &irp, &irp, c1, c2/* false*/);
     //mce.printPaths();
     auto res  = mce.GetPaths();
