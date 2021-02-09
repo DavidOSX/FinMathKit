@@ -7,7 +7,7 @@ namespace SiriusFM
 {
     
 inline double IntervalYearFrac(time_t t) {
-    constexpr double SecY = 365.25*86400;
+    constexpr double SecY = 365.25*86400.;
     return (double) t/SecY;
 }
 
@@ -41,7 +41,7 @@ inline void MCEngine <Diffusion,
                                                /*bool             a_isRN*/
                                                )
                       {
-                          assert(a_diff != nullptr && a_ap != nullptr && a_bp != nullptr && a_t0 <= a_T&& a_tau_min > 0); 
+                          assert(a_diff != nullptr && a_ap != nullptr && a_bp != nullptr && a_t0 <= a_T&& a_tau_min > 0);
                           
                           time_t Tsec = a_T - a_t0;
                           int tau_sec = a_tau_min*60;
@@ -56,13 +56,13 @@ inline void MCEngine <Diffusion,
                           //(long) ceil(yT-y0)/tau + 1;
                           long P = 2*a_P;
                           double y = y0; 
-                          double Sp0 = a_S0, Sp1 = a_S0;
+                          //double Sp0 = a_S0, Sp1 = a_S0;
                           
-                          if(L + P > m_MaxL + m_MaxP) std::invalid_argument("...");
+                          if(L * P > m_MaxL * m_MaxP) std::invalid_argument("...");
                           
                           double stau = sqrt(tau);
                           
-                          std::normal_distribution<> nd(0.,1);
+                          std::normal_distribution<> nd(0.0, 1.0);
                           std::mt19937_64 u;
                           
                           
@@ -82,6 +82,8 @@ inline void MCEngine <Diffusion,
                               path0[0] = a_S0;
                               path1[0] = a_S0;
                               double y = y0;
+                              double Sp0 = a_S0;
+                              double Sp1 = a_S0;
                               for(long l = 1; l < L; ++l) {
                                   double mu0 = 0.;
                                   double mu1 = 0.;

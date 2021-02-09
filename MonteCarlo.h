@@ -58,7 +58,7 @@ public:
                   );
     void printPaths() { 
         FILE *f = fopen("PATHS.txt","w");
-        //fprintf(f,"%ld %ld\n", m_L, m_P);
+        fprintf(f,"%ld %ld\n", m_L, m_P);
         for(int i = 0; i < m_L; ++i) fprintf(f,"%lf\n", m_paths[i]);
         fclose(f);
     }
