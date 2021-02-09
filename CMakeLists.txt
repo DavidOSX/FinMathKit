@@ -10,6 +10,13 @@ endif()
 
 ########Setting#######
 set(CMAKE_CXX_COMPILER /bin/clang++)
+set(HEADERS Diffusion.h 
+            IRProvider.h 
+            IRProviderConst.h 
+            MonteCarlo.h 
+            MonteCarlo.hpp)
+set(SOURCES main.cpp 
+            IRProvider.cpp)
 ######################
 
 #######Targets#########
@@ -17,6 +24,6 @@ set(CMAKE_CXX_COMPILER /bin/clang++)
 #...
 #######################
 
-add_executable(foo main.cpp IRProvider.cpp)
+add_executable(foo $(HEADERS) $(SOURCES))
 
 

@@ -5,7 +5,7 @@
 //#include <stdlib.h>
 //#include <string.h>
 
-using namespace std;
+//using namespace std;
 namespace SiriusFM {
 
 class Diffusion_GBM

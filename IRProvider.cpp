@@ -20,6 +20,7 @@ IRProvider<IRMode::Const>::IRProvider(char const* a_file) {
             }
             i++;
         }
+        fclose(f);
               
 }
     
