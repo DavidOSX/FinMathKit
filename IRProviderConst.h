@@ -2,7 +2,7 @@
 #include "IRProvider.h"
 
 
-using namespace SiriusFM;
+namespace SiriusFM {
 
 template<> class IRProvider<IRMode::Const> {
 private:
@@ -13,5 +13,7 @@ public:
     double r(CcyE a_ccy, double a_t) const { 
         return m_IRs[(int)a_ccy]; 
     }
+};
+    
 };
     
