@@ -19,7 +19,7 @@ public:
     Diffusion_GBM(double a_m, double a_sigma):
     m_mu(a_m),
     m_sigma(a_sigma)
-    { if(m_sigma <= 0) throw std:: invalid_argument("..."); }
+    { if(m_sigma <= 0) throw std::invalid_argument("..."); }
 
 };
 

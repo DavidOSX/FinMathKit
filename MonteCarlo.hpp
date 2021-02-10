@@ -63,7 +63,7 @@ inline void MCEngine <Diffusion,
                           double stau = sqrt(tau);
                           
                           std::normal_distribution<> nd(0.0, 1.0);
-                          std::mt19937_64 u;
+                          std::mt19937_64 u(time(nullptr));
                           
                           
                           //printf("%lf\n", tau)
@@ -104,11 +104,11 @@ inline void MCEngine <Diffusion,
                               double Sn0, Sn1;
                                if(l == L - 1) {
                                  Sn0 = Sp0 + mu0*tlast + sigma0*Z*slast;
-                                 Sn1 = Sp1 + mu1*tlast + sigma1*Z*slast;
+                                 Sn1 = Sp1 + mu1*tlast - sigma1*Z*slast;
                                 }
                                 else {
                                     Sn0 = Sp0 + mu0*tau + sigma0*Z*stau;
-                                    Sn1 = Sp1 + mu1*tau + sigma1*Z*stau;
+                                    Sn1 = Sp1 + mu1*tau - sigma1*Z*stau;
                                 }
                                 path0[l] = Sn0;
                                 path1[l] = Sn1;

@@ -1,6 +1,7 @@
 //#include "Diffusion.h"
 //#include <time.h>
 #include "MonteCarlo.hpp"
+#include "Vanillas.h"
 
 using namespace SiriusFM;
 using namespace std;
@@ -10,7 +11,7 @@ int main(const int argc, const char* argv[]) {
     CcyE c2 = CcyE::CHF;
     //Diffusion_GBM diff = Diffusion_GBM(0, 0.1);
     //IRMode IRM = IRM::Const;
-    if(argc < 8) {
+    if(argc < 9) {
         cerr << "not enough params\n";
         return 1;
     }
@@ -23,16 +24,25 @@ int main(const int argc, const char* argv[]) {
     double mu = atof(argv[2]);
     double sigma = atof(argv[3]);
     double s0 = atof(argv[4]);
-    long T_days = atol(argv[5]);
-    int tau_min = atoi(argv[6]);
-    long P = atol(argv[7]);
+    char const* optionType = argv[5];
+    double K = atof(argv[6]);
+    long T_days = atol(argv[7]);
+    int tau_min = atoi(argv[8]);
+    long P = atol(argv[9]);
+    
+    
+    Option const* opt;
     Diffusion_GBM diff = Diffusion_GBM(mu, sigma);
+    if(strcmp(optionType, "Call") == 0) opt = new EurCallOption(K, T_days);
+    else opt = new EurPutOption(K, T_days);
+    
+    
     time_t t0 = time(nullptr);
     time_t T = t0 + T_days*86400;
     double Ty = double(T_days)/365.25;
     
     
-    MCEngine<decltype(diff),decltype(irp), decltype(irp), decltype(c1), decltype(c2)> mce(20'000, 20'000);
+    MCEngine<decltype(diff), decltype(irp), decltype(irp), decltype(c1), decltype(c2)> mce(20'000, 20'000);
     mce.Simulate<false>(t0, T, tau_min, s0, P, &diff, &irp, &irp, c1, c2/* false*/);
     mce.printPaths();
     auto res  = mce.GetPaths();
@@ -41,6 +51,7 @@ int main(const int argc, const char* argv[]) {
     double const* paths = get<2>(res);
     double est = 0., est2 = 0.;
     int nvp = 0;
+    double priceOp = 0.;
     for(int p = 0; p < P1; ++p) {
         double const* path = paths + p*L1;
         double st = path[L1-1];
@@ -48,16 +59,22 @@ int main(const int argc, const char* argv[]) {
         ++nvp;
         double rt = log(st/s0);
         est += rt; est2 += rt*rt;
+        priceOp += opt -> payoff(L1, nullptr, path);
+       
     }
     assert(nvp > 1);
     est /= double(nvp);
+    priceOp /= double(nvp);
+    //cout << nvp << endl;
+    priceOp *= exp((-1)*irp.r(c1,0)*Ty);
     double VarST = (est2 - (double(nvp))*est*est)/double(nvp-1);
     double sigma2E = VarST/Ty;
     double muE = (est+VarST/2.0)/Ty;
-    cout << "mu="<<mu<<",muE="<<muE<<endl;
-    cout << "sigma2="<<sigma*sigma<<",sigma2E="<<sigma2E<<endl;
+    cout << "mu = " << mu << ", muE = " << muE << endl;
+    cout << "sigma2 = " << sigma*sigma << ", sigma2E = " << sigma2E << endl;
     
-    
+    if(strcmp(optionType, "Call") == 0) cout << "price(Call) = " << priceOp << endl;
+    else cout << "price(Put) = " << priceOp << endl;   
     
     
     
