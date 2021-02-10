@@ -21,7 +21,7 @@ public:
     m_mu(a_m),
     m_sigma(a_sigma)
     { 
-        if(m_sigma <= 0) throw std::invalid_argument("..."); 
+        if(m_sigma <= 0) throw std::invalid_argument("bad sigma"); 
     }
 
 };
@@ -85,9 +85,9 @@ class Lipton {
         m_sigma_2(a_sigma2),
         m_sigma_3(a_sigma3)
         { 
-          if(m_sigma_1 <= 0) throw std:: invalid_argument("...");
-          if(m_sigma_3 <= 0) throw std:: invalid_argument("...");
-          if(m_sigma_2*m_sigma_2-4*m_sigma_1*m_sigma_3 > 0) throw std:: invalid_argument("...");
+          if(m_sigma_1 <= 0) throw std:: invalid_argument("bad sigma 1");
+          if(m_sigma_3 <= 0) throw std:: invalid_argument("bad sigma 2");
+          if(m_sigma_2*m_sigma_2-4*m_sigma_1*m_sigma_3 > 0) throw std:: invalid_argument("bad discriminant");
         }
 };
 
@@ -108,7 +108,7 @@ class CIR {
         m_sigma(a_sigma),
         m_theta(a_theta)
         { 
-            if(m_sigma <= 0) throw std:: invalid_argument("..."); 
+            if(m_sigma <= 0) throw std:: invalid_argument("bad sigma"); 
         }
 
 };
