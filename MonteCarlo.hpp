@@ -50,13 +50,9 @@ inline void MCEngine <Diffusion,
                           long L = (Tsec % tau_sec == 0) ? Tsec/tau_sec : Tsec/tau_sec + 1;
                           
                           double y0 = YearFrac(a_t0);
-                          //double yT = YearFrac(a_T);
-                          
-                          //dou
-                          //(long) ceil(yT-y0)/tau + 1;
+                        
                           long P = 2*a_P;
                           double y = y0; 
-                          //double Sp0 = a_S0, Sp1 = a_S0;
                           
                           if(L * P > m_MaxL * m_MaxP) std::invalid_argument("...");
                           
@@ -65,16 +61,11 @@ inline void MCEngine <Diffusion,
                           std::normal_distribution<> nd(0.0, 1.0);
                           std::mt19937_64 u(time(nullptr));
                           
-                          
-                          //printf("%lf\n", tau)
-                          
                           double tlast = (Tsec%tau_sec==0)? tau :IntervalYearFrac(Tsec-(L-1)*tau_sec);
                           //yT - y0 - double(L - 2)*tau;
                           assert(tlast <= tau && 0 < tlast);
                           double slast = sqrt(tlast);
                           ++L;
-                          
-                          //assert(slast <= stau && 0 < slast);
                           
                           for(long p = 0; p < a_P; ++p) {
                               double* path0 = m_paths + 2*p*L;
@@ -116,6 +107,5 @@ inline void MCEngine <Diffusion,
                                 Sp1 = Sn1;
                             }
                           } m_L = L; m_P = P;
-                         // return std::make_pair(L, p);
                       }
 }
