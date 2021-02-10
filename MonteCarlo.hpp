@@ -28,17 +28,16 @@ inline void MCEngine <Diffusion,
                       BProvider, 
                       AssetClassA, 
                       AssetClassB> ::
-                                       Simulate(time_t           a_t0, 
-                                               time_t           a_T, 
-                                               int              a_tau_min,
-                                               double           a_S0,
-                                               long             a_P,
-                                               Diffusion_GBM const* a_diff, 
+                                       Simulate(time_t                          a_t0, 
+                                               time_t                           a_T, 
+                                               int                              a_tau_min,
+                                               double                           a_S0,
+                                               long                             a_P,
+                                               Diffusion_GBM const*             a_diff, 
                                                IRProvider<IRMode::Const> const* a_ap,
                                                IRProvider<IRMode::Const> const* a_bp,
-                                               CcyE             a_A,
-                                               CcyE             a_B
-                                               /*bool             a_isRN*/
+                                               CcyE                             a_A,
+                                               CcyE                             a_B
                                                )
                       {
                           assert(a_diff != nullptr && a_ap != nullptr && a_bp != nullptr && a_t0 <= a_T&& a_tau_min > 0);
