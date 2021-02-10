@@ -1,7 +1,7 @@
-#pragma once
-#include "MonteCarlo.h"
+
 #include <cassert>
 #include <random>
+#include "MonteCarlo.h"
 
 
 namespace SiriusFM
