@@ -107,4 +107,4 @@ inline void MCEngine <Diffusion,
                             }
                           } m_L = L; m_P = P;
                       }
-}
+};
