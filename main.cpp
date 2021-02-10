@@ -1,5 +1,4 @@
-//#include "Diffusion.h"
-//#include <time.h>
+
 #include "MonteCarlo.hpp"
 #include "Vanillas.h"
 
@@ -9,8 +8,7 @@ using namespace std;
 int main(const int argc, const char* argv[]) {
     CcyE c1 = CcyE::USD;
     CcyE c2 = CcyE::CHF;
-    //Diffusion_GBM diff = Diffusion_GBM(0, 0.1);
-    //IRMode IRM = IRM::Const;
+    
     if(argc < 9) {
         cerr << "not enough params\n";
         return 1;
@@ -43,7 +41,7 @@ int main(const int argc, const char* argv[]) {
     
     
     MCEngine<decltype(diff), decltype(irp), decltype(irp), decltype(c1), decltype(c2)> mce(20'000, 20'000);
-    mce.Simulate<false>(t0, T, tau_min, s0, P, &diff, &irp, &irp, c1, c2/* false*/);
+    mce.Simulate<false>(t0, T, tau_min, s0, P, &diff, &irp, &irp, c1, c2);
     mce.printPaths();
     auto res  = mce.GetPaths();
     long L1 = get<0>(res);
@@ -69,6 +67,7 @@ int main(const int argc, const char* argv[]) {
     double VarST = (est2 - (double(nvp))*est*est)/double(nvp-1);
     double sigma2E = VarST/Ty;
     double muE = (est+VarST/2.0)/Ty;
+    
     cout << "mu = " << mu << ", muE = " << muE << endl;
     cout << "sigma2 = " << sigma*sigma << ", sigma2E = " << sigma2E << endl;
     
