@@ -65,7 +65,6 @@ int main(const int argc, const char* argv[]) {
     assert(nvp > 1);
     est /= double(nvp);
     priceOp /= double(nvp);
-    //cout << nvp << endl;
     priceOp *= exp((-1)*irp.r(c1,0)*Ty);
     double VarST = (est2 - (double(nvp))*est*est)/double(nvp-1);
     double sigma2E = VarST/Ty;
