@@ -1,5 +1,6 @@
 
 #include <algorithm>
+#include <cassert>
 #include "Options.h"
 
 namespace SiriusFM {
@@ -17,6 +18,7 @@ public:
     }
     
     double payoff(long a_L, double const* a_t, double const* a_S) const override {
+        assert(a_L > 1 && a_S != nullptr);
         return std::max<double>(a_S[a_L - 1] - m_K, 0);
     }
     ~EurCallOption() override {}
@@ -35,6 +37,7 @@ public:
     }
     
     double payoff(long a_L, double const* a_t, double const* a_S) const override {
+        assert(a_L > 1 && a_S != nullptr);
         return std::max<double>(-a_S[a_L - 1] + m_K, 0);
     }
     ~EurPutOption() override {}
