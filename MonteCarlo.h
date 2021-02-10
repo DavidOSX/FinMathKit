@@ -5,8 +5,6 @@
 #include "Diffusion.h"
 #include "IRProviderConst.h"
 
-using namespace std;
-
 namespace SiriusFM {
 
 template <typename Diffusion, 
