@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-using namespace std;
 namespace SiriusFM {
 
 enum class CcyE : int {
