@@ -4,14 +4,24 @@
 
 namespace SiriusFM {
 
-class OPPathEval {
+
+
+template <typename Diffusion, 
+          typename AProvider, 
+          typename BProvider, 
+          typename AssetClassA, 
+          typename AssetClassB>
+class MCOptionPricer {
+    
+private:
+    class OPPathEval {
     private :
-        Option const* const m_option;
+        Option<AssetClassA, AssetClassB> const* const m_option;
         long m_P; // total paths
         double m_sum; //sum of payoff
         double m_sum2; // sum of  payoff^2
     public:
-        OPPathEval(Option const * a_option):
+        OPPathEval(Option<AssetClassA, AssetClassB> const * a_option):
         m_option(a_option),
         m_P     (0),
         m_sum   (0),
@@ -47,16 +57,6 @@ class OPPathEval {
         }
         //std::tuple GetStats
 };
-
-template <typename Diffusion, 
-          typename AProvider, 
-          typename BProvider, 
-          typename AssetClassA, 
-          typename AssetClassB,
-          typename PathEvaluator>
-class MCOptionPricer {
-    
-private:
     Diffusion const* const      m_diff;
     AProvider                   m_airp;
     BProvider                   m_birp;
@@ -65,7 +65,7 @@ private:
              BProvider, 
              AssetClassA, 
              AssetClassB, 
-             PathEvaluator>     m_mce;
+             OPPathEval>     m_mce;
     bool                        m_useTimerSeed;
     
 public:
@@ -83,12 +83,10 @@ public:
                        
                    }
                    
-    double PX(Option const* a_option,
-              AssetClassA a_A,
-              AssetClassB a_B,
+    double PX(Option<AssetClassA, AssetClassB> const* a_option,
               time_t a_t0,
-              int a_tauMins = 60,
-              long a_P = 100'000
+              int a_tauMins,
+              long a_P
            );
 };
 

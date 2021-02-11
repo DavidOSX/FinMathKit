@@ -53,12 +53,16 @@ public:
                                  PathEvaluator*               a_pathEval
                                 );
                     
-    /*void printPaths() { 
+    void printPaths(double a_S0) { 
         FILE *f = fopen("PATHS.txt","w");
+        int i = 0;
         //fprintf(f,"%ld %ld\n", m_L, m_P);
-        for(int i = 0; i < m_L; ++i) fprintf(f,"%lf\n", m_paths[i]);
+        while((m_paths[i + 1] != a_S0 && i < 5000)) {
+            fprintf(f,"%lf\n", m_paths[i]);
+            i++;
+        }
         fclose(f);
-    }*/
+    }
                     
     //std::tuple<long, long, double const*> GetPaths() const {
     //    return (m_L <= 0 || m_P < 0) ? std::make_tuple(0,0,nullptr) : std::make_tuple(m_L,m_P,m_paths);

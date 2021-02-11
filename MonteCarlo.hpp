@@ -92,7 +92,7 @@ inline void MCEngine <Diffusion,
                           
                           for(long i = 0; i < PI; ++i) {
                         //std::cout << 1 << std::endl;
-                            for(long p = 0; p < PMh; ++p) {
+                            for(long p = 0; p < std::min<long>(a_P, PMh); ++p) {
                               double* path0 = m_paths + 2 * p * L;
                               double* path1 = path0 + L;
                               path0[0] = a_diff -> GetStartPoint();
@@ -129,7 +129,7 @@ inline void MCEngine <Diffusion,
                                 Sp0 = Sn0;
                                 Sp1 = Sn1;
                             }
-                          }  (*a_pathEval)(L, PM, m_paths, m_ts); //evaluate in-memory paths
+                          }  (*a_pathEval)(L, std::min<long>(P, PM), m_paths, m_ts); //evaluate in-memory paths
                         } //m_L = L; m_P = P;
                       }
 };

@@ -40,41 +40,20 @@ int main(const int argc, const char* argv[]) {
     double Ty = double(T_days)/365.25;
     
     
-    Option const* opt;
+    OptionFX const* opt;
     Diffusion_GBM diff = Diffusion_GBM(mu, sigma, s0);
-    if(strcmp(optionType, "Call") == 0) opt = new EurCallOption(K, T);
-    else opt = new EurPutOption(K, T);
+    if(strcmp(optionType, "Call") == 0) opt = new EurCallOptionFX(c1, c2, K, T);
+    else opt = new EurPutOption(c1, c2, K, T);
     
     
-    MCOptionPricer<decltype(diff), IRPConst, IRPConst, decltype(c1), decltype(c2), OPPathEval> pr(&diff, argv[1], argv[1], true);
-    double px = pr.PX(opt, c1, c2, t0);
+    MCOptionPricer<decltype(diff), IRPConst, IRPConst, decltype(c1), decltype(c2)> pr(&diff, argv[1], argv[1], true);
+    double px = pr.PX(opt, t0, tau_min, P);
     //double err = res.second;
     
     //OPPathEval pathEval(opt);
     
     
-    //MCEngine<decltype(diff), decltype(irp), decltype(irp), decltype(c1), decltype(c2), decltype(pathEval)> mce(20'000, 20'000);
-    //mce.Simulate<true>(t0, T, tau_min, P, true, &diff, &irp, &irp, c1, c2, &pathEval);
-    //mce.printPaths();
-    //auto res  = mce.GetPaths();
-    //long L1 = get<0>(res);
-    //long P1 = get<1>(res);
-    //double const* paths = get<2>(res);
-    //double est = 0., est2 = 0.;
-    //int nvp = 0;
-    /*for(int p = 0; p < P1; ++p) {
-        double const* path = paths + p*L1;
-        double st = path[L1-1];
-        if(st <= 0.) continue;
-        ++nvp;
-        double rt = log(st/s0);
-        est += rt; est2 += rt*rt;
-        //priceOp += opt -> payoff(L1, nullptr, path);
-       
-    }*/
-    //assert(nvp > 1);
-    //est /= double(nvp);
-    //priceOp /= double(nvp);
+    
     //priceOp *= exp((-1)*irp.r(c1,0)*Ty);
     //double VarST = (est2 - (double(nvp))*est*est)/double(nvp-1);
     //double sigma2E = VarST/Ty;
