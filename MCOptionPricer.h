@@ -2,7 +2,8 @@ template <Diffusion,
           AProvider, 
           BProvider, 
           AssetClassA, 
-          AssetClassB>
+          AssetClassB,
+          PathEvaluator>
 class MCOptionPricer {
     
 private:
