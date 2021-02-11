@@ -10,7 +10,7 @@ class Diffusion_GBM
 private:
     double const m_mu;
     double const m_sigma;
-    double const m_S0
+    double const m_S0;
 public:
     double mu(double a_s, double t) const { 
         return m_mu*a_s; 
@@ -25,6 +25,9 @@ public:
     { 
         if(m_sigma <= 0) throw std::invalid_argument("bad sigma"); 
     }
+    double GetStartPoint() const {
+        return m_S0;
+    }    
 
 };
 

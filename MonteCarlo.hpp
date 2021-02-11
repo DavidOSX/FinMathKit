@@ -1,20 +1,14 @@
 
 #include <cassert>
 #include <random>
+#include "Time.h"
 #include "MonteCarlo.h"
 
 
 namespace SiriusFM
 {
     
-inline double IntervalYearFrac(time_t t) {
-    constexpr double SecY = 365.25*86400.;
-    return (double) t/SecY;
-}
 
-inline double YearFrac(time_t t) {
-    return 1970.+ IntervalYearFrac(t);
-}
 
 
 
@@ -22,25 +16,26 @@ template <typename Diffusion,
           typename AProvider, 
           typename BProvider, 
           typename AssetClassA, 
-          typename AssetClassB
+          typename AssetClassB,
           typename PathEvaluator>  
 template<bool a_isRN>
 inline void MCEngine <Diffusion,
                       AProvider, 
                       BProvider, 
                       AssetClassA, 
-                      AssetClassB
-                      PathEvaluator> :: Simulate(time_t                           a_t0, 
+                      AssetClassB,
+                      PathEvaluator> :: Simulate(time_t                         a_t0, 
                                                time_t                           a_T, 
                                                int                              a_tau_min,
                                                /*double                           a_S0,*/
                                                long                             a_P,
                                                bool                             a_useTimerSeed,
-                                               Diffusion_GBM const*             a_diff, 
-                                               IRProvider<IRMode::Const> const* a_ap,
-                                               IRProvider<IRMode::Const> const* a_bp,
-                                               CcyE                             a_A,
-                                               CcyE                             a_B
+                                               Diffusion const*                 a_diff, 
+                                               AProvider const*                 a_ap,
+                                               BProvider const*                 a_bp,
+                                               AssetClassA                      a_A,
+                                               AssetClassB                      a_B,
+                                               PathEvaluator*                   a_pathEval
                                                )
                       {
                           assert(a_diff != nullptr &&
@@ -55,6 +50,7 @@ inline void MCEngine <Diffusion,
                           
                           double tau = IntervalYearFrac(tau_sec);
                           long L = (Tsec % tau_sec == 0) ? Tsec/tau_sec : Tsec/tau_sec + 1;
+                          ++L;
                           
                           double y0 = YearFrac(a_t0);
                         
@@ -64,35 +60,38 @@ inline void MCEngine <Diffusion,
                           if(L > m_MaxL) std::invalid_argument("too many steps");
                           
                           double stau = sqrt(tau);
+                           double tlast = (Tsec%tau_sec == 0)? tau :IntervalYearFrac(Tsec-(L-1)*tau_sec);
+                          //yT - y0 - double(L - 2)*tau;
+                          assert(tlast <= tau && 0 < tlast);
+                          double slast = sqrt(tlast);
+                          
                           
                           std::normal_distribution<> nd(0.0, 1.0);
                           std::mt19937_64 u(a_useTimerSeed ? time(nullptr) : 0);
                           
                           long PM = (m_MaxL * m_MaxPM) / L;//how many paths we can store in memory 
                           
-                          if(P % 2 != 0) --P;
-                          assert(PM > 0 && P % 2 == 0);
+                          if(PM % 2 != 0) --PM;
+                          assert(PM > 0 && PM % 2 == 0);
+                          
                           long PMh = PM / 2;
                           // number of outer P iters:
                           long PI = (P % PM == 0) ? P/PM : (P/PM + 1);
                           
-                          //adlust P
-                          P = PI * PM;
+                          //adjust P
+                         // P = PI * PM;
                           
-                          m_ts[L - 1] = m_ts[L-2]+tlast;
+                          //
+                          
+                         
                           
                           for(long l = 0; l < L - 1;  ++l) m_ts[l] = y0 + double(l) * tau;
                           
+                           m_ts[L - 1] = m_ts[L-2] + tlast;
+                         
                           
-                          
-                          
-                          double tlast = (Tsec%tau_sec==0)? tau :IntervalYearFrac(Tsec-(L-1)*tau_sec);
-                          //yT - y0 - double(L - 2)*tau;
-                          assert(tlast <= tau && 0 < tlast);
-                          double slast = sqrt(tlast);
-                          ++L;
                           for(long i = 0; i < PI; ++i) {
-                          
+                        //std::cout << 1 << std::endl;
                             for(long p = 0; p < PMh; ++p) {
                               double* path0 = m_paths + 2 * p * L;
                               double* path1 = path0 + L;
@@ -130,7 +129,7 @@ inline void MCEngine <Diffusion,
                                 Sp0 = Sn0;
                                 Sp1 = Sn1;
                             }
-                          }  (*a_pathEval)(L, PM, m_paths, m_ts) //evaluate in-memory paths
+                          }  (*a_pathEval)(L, PM, m_paths, m_ts); //evaluate in-memory paths
                         } //m_L = L; m_P = P;
                       }
 };
