@@ -10,6 +10,7 @@ class Diffusion_GBM
 private:
     double const m_mu;
     double const m_sigma;
+    double const m_S0
 public:
     double mu(double a_s, double t) const { 
         return m_mu*a_s; 
@@ -17,9 +18,10 @@ public:
     double sigma(double a_s, double t) const { 
         return (a_s<0) ? 0 : m_sigma*a_s; 
     }
-    Diffusion_GBM(double a_m, double a_sigma):
+    Diffusion_GBM(double a_m, double a_sigma, double a_S0):
     m_mu(a_m),
-    m_sigma(a_sigma)
+    m_sigma(a_sigma),
+    m_S0(a_S0)
     { 
         if(m_sigma <= 0) throw std::invalid_argument("bad sigma"); 
     }

@@ -2,6 +2,46 @@
 #include "MonteCarlo.hpp"
 #include "Vanillas.h"
 
+namespace SiriusFM {
+    //path evaluator for option pricing:
+    class OPPathEval {
+    private :
+        Option const* const m_option;
+        long m_P; // total paths
+        double m_sum; //sum of payoff
+        double m_sum2; // sum of  payoff^2
+    public:
+        OPPaths(Option const * a_option):
+        m_option(a_option),
+        m_P     (0),
+        m_sum   (0),
+        m_sum2  (0)
+        { 
+            assert(m_option != nullptr); 
+            
+        }
+        void operator() (long a_L, 
+                         long a_PM, 
+                         double const* a_paths, 
+                         double const* a_ts)
+        {
+            for (long p = 0; p < a_PM; ++p) {
+                double const* path = a_paths + p + a_L;
+                double payOff      = m_option -> payoff(a_L, a_ts, path);
+                m_sum += payOff;
+                m_sum2 += payOff * payOff;
+            }
+            m_P += a_PM;
+        }
+        
+        std::pair<double, double> GetPxStats() const {
+            if(m_P < 2) throw std::runtime_error("empty OPPathEval");
+            double px = m_sum / double(m_P);
+            double var = m_sum2;
+        }
+    };
+};
+
 using namespace SiriusFM;
 using namespace std;
 
@@ -30,7 +70,7 @@ int main(const int argc, const char* argv[]) {
     
     
     Option const* opt;
-    Diffusion_GBM diff = Diffusion_GBM(mu, sigma);
+    Diffusion_GBM diff = Diffusion_GBM(mu, sigma, s0);
     if(strcmp(optionType, "Call") == 0) opt = new EurCallOption(K, T_days);
     else opt = new EurPutOption(K, T_days);
     
@@ -41,7 +81,7 @@ int main(const int argc, const char* argv[]) {
     
     
     MCEngine<decltype(diff), decltype(irp), decltype(irp), decltype(c1), decltype(c2)> mce(20'000, 20'000);
-    mce.Simulate<true>(t0, T, tau_min, s0, P, &diff, &irp, &irp, c1, c2);
+    mce.Simulate<true>(t0, T, tau_min, P, true, &diff, &irp, &irp, c1, c2);
     mce.printPaths();
     auto res  = mce.GetPaths();
     long L1 = get<0>(res);
