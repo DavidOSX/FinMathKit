@@ -2,16 +2,8 @@
 cmake_minimum_required (VERSION 2.6) 
 project(foo)
 
-#######Settings flags######
-#if(APPLE)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O2")
-#else()
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
-#endif()
-############
-
 ########Setting#######
-set(CMAKE_CXX_COMPILER /bin/clang++)
+set(CMAKE_CXX_COMPILER "clang++")
 #set(HEADERS Diffusion.h 
 #            IRProvider.h 
 #            IRProviderConst.h 
@@ -20,6 +12,16 @@ set(CMAKE_CXX_COMPILER /bin/clang++)
 #set(SOURCES main.cpp 
 #            IRProvider.cpp)
 ######################
+
+
+#######Settings flags######
+#if(APPLE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O2")
+#else()
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+#endif()
+############
+
 
 #######Targets#########
 
