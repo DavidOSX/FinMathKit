@@ -9,7 +9,7 @@ int main(const int argc, const char* argv[]) {
     CcyE c1 = CcyE::USD;
     CcyE c2 = CcyE::CHF;
     
-    if(argc < 9) {
+    if(argc < 10) {
         cerr << "not enough params\n";
         return 1;
     }
