@@ -41,7 +41,7 @@ int main(const int argc, const char* argv[]) {
     
     
     MCEngine<decltype(diff), decltype(irp), decltype(irp), decltype(c1), decltype(c2)> mce(20'000, 20'000);
-    mce.Simulate<false>(t0, T, tau_min, s0, P, &diff, &irp, &irp, c1, c2);
+    mce.Simulate<true>(t0, T, tau_min, s0, P, &diff, &irp, &irp, c1, c2);
     mce.printPaths();
     auto res  = mce.GetPaths();
     long L1 = get<0>(res);

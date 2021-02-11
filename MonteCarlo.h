@@ -11,10 +11,10 @@ template <typename Diffusion,
           typename AProvider, 
           typename BProvider, 
           typename AssetClassA, 
-          typename AssetClassB> class MCEngine {
+          typename AssetClassB
+          typename PathEvaluation> class MCEngine {
 private:
-    long const         m_MaxL;
-    long const         m_MaxP;
+    long const         m_MaxLP; //long const         m_MaxP;
     double*            m_paths;
     long               m_L;
     long               m_P;/*
@@ -28,26 +28,28 @@ private:
     
 public:
     MCEngine(long a_MaxL, long a_MaxP):
-    m_MaxL(a_MaxL),
-    m_MaxP(a_MaxP),
-    m_paths(new double[m_MaxL*m_MaxP]),
+    m_MaxLP(a_MaxLP),
+    //m_MaxP(a_MaxP),
+    m_paths(new double[m_MaxLP]),
     m_L(0),
     m_P(0)
     { 
-              if(m_MaxL <= 0|| m_MaxP <= 0) throw std::invalid_argument("..."); 
+              if(m_MaxLP <= 0) throw std::invalid_argument("..."); 
+              for(int lp = 0; lp < m_MaxLP; ++lp) m_paths[lp] = 0; 
     }
     
-    template<bool> void Simulate(time_t                               a_t0, 
-                                 time_t                               a_T, 
-                                 int                                  a_tau_min,
-                                 double                               a_S0,
-                                 long                                 a_P,
-                                 Diffusion_GBM const*                 a_diff, 
-                                 IRProvider<IRMode::Const> const*     a_ap,
-                                 IRProvider<IRMode::Const> const*     a_bp,
-                                 CcyE                                 a_A,
-                                 CcyE                                 a_B
-                              );
+    template<bool> void Simulate(time_t                       a_t0, 
+                                 time_t                       a_T, 
+                                 int                          a_tau_min,
+                                 double                       a_S0,
+                                 long                         a_P,
+                                 Diffusion const*             a_diff, 
+                                 AProvider const*             a_ap,
+                                 BProvider const*             a_bp,
+                                 AssetClassA                  a_A,
+                                 AssetClassB                  a_B
+                                 PathEvaluator*               a_pathEval
+                                );
                     
     void printPaths() { 
         FILE *f = fopen("PATHS.txt","w");
@@ -56,8 +58,8 @@ public:
         fclose(f);
     }
                     
-    std::tuple<long,long,double const*> GetPaths() const {
-        return (m_L <= 0||m_P<=0)?std::make_tuple(0,0,nullptr):std::make_tuple(m_L,m_P,m_paths);
+    std::tuple<long, long, double const*> GetPaths() const {
+        return (m_L <= 0 || m_P < 0) ? std::make_tuple(0,0,nullptr) : std::make_tuple(m_L,m_P,m_paths);
     }
                     
     ~MCEngine() { delete[] m_paths; }

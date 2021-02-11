@@ -22,13 +22,15 @@ template <typename Diffusion,
           typename AProvider, 
           typename BProvider, 
           typename AssetClassA, 
-          typename AssetClassB>  
+          typename AssetClassB
+          typename PathEvaluator>  
 template<bool a_isRN>
 inline void MCEngine <Diffusion,
                       AProvider, 
                       BProvider, 
                       AssetClassA, 
-                      AssetClassB> :: Simulate(time_t                           a_t0, 
+                      AssetClassB
+                      PathEvaluator> :: Simulate(time_t                           a_t0, 
                                                time_t                           a_T, 
                                                int                              a_tau_min,
                                                double                           a_S0,
