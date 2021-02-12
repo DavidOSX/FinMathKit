@@ -1,6 +1,6 @@
 ###
 cmake_minimum_required (VERSION 2.6) 
-project(foo)
+project(Foo)
 
 ########Setting#######
 set(CMAKE_CXX_COMPILER "clang++")
@@ -24,10 +24,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O2")
 
 
 #######Targets#########
-
+##set(TARGETS pricer hedger)
 #...
 #######################
+add_executable(pricer main.cpp )
 
-add_executable(foo main.cpp IRProvider.cpp)
+add_executable(hedger mainhedge.cpp )
+
+add_library(IRProvider IRProvider.cpp)
+
+target_link_libraries(pricer PUBLIC IRProvider)
+target_link_libraries(hedger PUBLIC IRProvider)
+
 
 
