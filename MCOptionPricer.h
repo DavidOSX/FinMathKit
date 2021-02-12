@@ -20,6 +20,8 @@ private:
         long m_P; // total paths
         double m_sum; //sum of payoff
         double m_sum2; // sum of  payoff^2
+        //double m_minPO; // min PayOff
+        //double m_maxPO; // m_maxPO
     public:
         OPPathEval(Option<AssetClassA, AssetClassB> const * a_option):
         m_option(a_option),
@@ -30,7 +32,6 @@ private:
         //m_maxPO (-infty)
         { 
             assert(m_option != nullptr); 
-            
         }
         void operator() (long a_L, 
                          long a_PM, 
@@ -44,8 +45,7 @@ private:
                 m_sum2 += payOff * payOff;
                 //m_minPO = std::min<double>(m_minPO, payOff);
                 //m_maxPO = std::max<double>(m_maxPO, payOff);
-            }
-            m_P += a_PM;
+            }  m_P += a_PM;
         }
         
         std::pair<double, double> GetPxStats() const { //double GetPx
@@ -65,7 +65,7 @@ private:
              BProvider, 
              AssetClassA, 
              AssetClassB, 
-             OPPathEval>     m_mce;
+             OPPathEval>        m_mce;
     bool                        m_useTimerSeed;
     
 public:
@@ -79,15 +79,13 @@ public:
                    m_birp(a_fileB),
                    m_mce(102'271, 4'096),
                    m_useTimerSeed(a_useTimerSeed)
-                   { /* m_mce(102271,4096)*/ 
-                       
-                   }
+                   {}
                    
     double PX(Option<AssetClassA, AssetClassB> const* a_option,
               time_t a_t0,
               int a_tauMins,
               long a_P
-           );
+             );
 };
 
 };   

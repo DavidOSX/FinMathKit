@@ -43,7 +43,7 @@ int main(const int argc, const char* argv[]) {
     OptionFX const* opt;
     Diffusion_GBM diff = Diffusion_GBM(mu, sigma, s0);
     if(strcmp(optionType, "Call") == 0) opt = new EurCallOptionFX(c1, c2, K, T);
-    else opt = new EurPutOption(c1, c2, K, T);
+    else opt = new EurPutOptionFX(c1, c2, K, T);
     
     
     MCOptionPricer<decltype(diff), IRPConst, IRPConst, decltype(c1), decltype(c2)> pr(&diff, argv[1], argv[1], true);
