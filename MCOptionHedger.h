@@ -2,6 +2,7 @@
 #pragma once
 #include <functional>
 #include "Options.h"
+#include "MonteCarlo.h"
 
 namespace SiriusFM {
 
@@ -12,12 +13,13 @@ namespace SiriusFM {
                     typename AssetClassA, 
                     typename AssetClassB>
           class MCOptionHedger {
+          public:
+                    using DeltaFunc = std::function<double(double, double)>;
     
           private:
           class OHPathEval {
         
-          public:
-                    using DeltaFunc = std::function<double(double, double)>;
+          
           private :
                     Option<AssetClassA, AssetClassB> const* const m_option;
                     AProvider const*                              m_airp;
@@ -31,27 +33,27 @@ namespace SiriusFM {
                     double                                        m_sumPnL; //sum of residual P&Ls
                     double                                        m_sumPnL2; // sum of P&Ls^2
                     double                                        m_minPnL; // min PayOff
-                    double                                        m_maxPnl; // m_maxPO
+                    double                                        m_maxPnL; // m_maxPO
           public:
-                    OPPathEval(Option<AssetClassA, AssetClassB> const * a_option, 
-                    AProvider const* a_airp,
-                    BProvider const* a_birp,
-                    DeltaFunc const* a_deltaFunc,
-                    double           a_C0,
-                    double           a_deltaAcc) 
-                    : m_option    (a_option),
-                      m_airp      (a_airp),
-                      m_birp      (a_birp),
-                      m_rsA       (nullptr),
-                      m_rsB       (nullptr),
-                      m_C0        (a_C0),
-                      m_deltaFunc (a_deltaFunc),
-                      m_deltaAcc  (a_deltaAcc)
-                      m_P         (0),
-                      m_PnL       (0),
-                      m_PnL2      (0)
-                      m_minPnL    (INFINITY),
-                      m_maxPNl    (-INFINITY)
+                    OHPathEval(Option<AssetClassA, AssetClassB> const * a_option, 
+                               AProvider const* a_airp,
+                               BProvider const* a_birp,
+                               DeltaFunc const* a_deltaFunc,
+                               double           a_C0,
+                               double           a_deltaAcc) 
+                            : m_option    (a_option),
+                              m_airp      (a_airp),
+                              m_birp      (a_birp),
+                              m_rsA       (nullptr),
+                              m_rsB       (nullptr),
+                              m_C0        (a_C0),
+                              m_deltaFunc (a_deltaFunc),
+                              m_deltaAcc  (a_deltaAcc),
+                              m_P         (0),
+                              m_sumPnL    (0),
+                              m_sumPnL2   (0),
+                              m_minPnL    (INFINITY),
+                              m_maxPnL    (-INFINITY)
                     { 
                               assert(m_option != nullptr && 
                               m_deltaFunc != nullptr && 
@@ -68,18 +70,19 @@ namespace SiriusFM {
                             {
                               if (m_rsA == nullptr) {
                                         m_rsA = new double[a_L];
-                                        for (long l = 0; l < a_L; ++l)          m_rsA[l] = m_airp -> r(m->option->assetA(), t);
+                                        for (long l = 0; l < a_L; ++l)          m_rsA[l] = m_airp -> r(m_option->assetA(), a_ts[l]);
                               }
                               if (m_rsB == nullptr) {
                                         m_rsB = new double[a_L];
-                                        for (long l = 0; l < a_L; ++l)          m_rsB[l] = m_birp -> r(m->option->assetB(), t);
+                                        for (long l = 0; l < a_L; ++l)          m_rsB[l] = m_birp -> r(m_option->assetB(), a_ts[l]);
                               }
                               for (long p = 0; p < a_PM; ++p) {
                 
                                         double const* path = a_paths + p * a_L;
+                                        
                                         // delta-hedging along this path:
                                         double M     = - m_C0;
-                                        double deltaP    = 0.0; //cur delta
+                                        double delta    = 0.0; //cur delta
                                         for (long l = 0; l < a_L; ++l) {
                     
                                                   double St   = path[l];
@@ -89,7 +92,7 @@ namespace SiriusFM {
                                                   if(l > 0) {
                                                             double tau = t - a_ts[l - 1];
                                                             double Sp = path[l - 1];
-                                                            M += M * tau * m_rsB[l - 1]);
+                                                            M += M * tau * m_rsB[l - 1];
                         
                                                             M += Sp * tau * m_rsA[l - 1];
                         
@@ -107,10 +110,10 @@ namespace SiriusFM {
                               double PnL = M + delta * path[a_L - 1] + m_option -> payoff(a_L, a_ts, path);
             
                 
-                              m_sumPnl += PnL;
+                              m_sumPnL += PnL;
                               m_sumPnL2 += PnL * PnL;
                               m_minPnL = std::min<double>(m_minPnL, PnL);
-                              m_maxPnL = std::max<double>(m_maxPO, PnL);
+                              m_maxPnL = std::max<double>(m_maxPnL, PnL);
                               }  m_P += a_PM;
                             }
         
@@ -137,7 +140,7 @@ namespace SiriusFM {
                     BProvider, 
                     AssetClassA, 
                     AssetClassB, 
-                    OPPathEval>       m_mce;
+                    OHPathEval>       m_mce;
           bool                        m_useTimerSeed;
     
       public:
@@ -156,16 +159,18 @@ namespace SiriusFM {
           std::tuple<double, double, double, double> 
           SimulateHedging(Option<AssetClassA, AssetClassB> const* a_option,
                           time_t                                  a_t0,
+                          double                                  a_C0,
+                          DeltaFunc const*                        a_deltaFunc,
+                          double                                  a_deltaAcc,
                           int                                     a_tauMins,
-                          long                                    a_P
-                         );
+                          long                                    a_P);
                          
            double GetRateA(AssetClassA a_A, double a_ty) const { 
-                    return m_irpA.r(a_A, a_ty); 
+                    return m_airp.r(a_A, a_ty); 
            }
 
           double GetRateB(AssetClassB a_B, double a_ty) const { 
-                    return m_irpB.r(a_tB, a_ty); 
+                    return m_birp.r(a_B, a_ty); 
           }
       };
 

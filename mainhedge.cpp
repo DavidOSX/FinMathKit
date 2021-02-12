@@ -1,4 +1,5 @@
-
+#include "Diffusion.h"
+#include "IRProviderConst.h"
 #include "MonteCarlo.hpp"
 #include "Vanillas.h"
 #include "MCOptionHedger.hpp"
@@ -13,7 +14,7 @@ namespace  {
     
     inline double BSMPxCall(double a_S0, 
                             double a_K, 
-                            double a_Ty, 
+                            double a_TTE, 
                             double rateA, 
                             double rateB, 
                             double a_sigma) 
@@ -24,27 +25,27 @@ namespace  {
         return std::max<double>(a_S0 - a_K, 0);
 
         double xd = a_sigma * sqrt(a_TTE);
-        double x1 = (log(a_S0 / a_K) + (a_rateB - a_rateA + a_sigma * a_sigma / 2.0) * a_TTE) / xd;
+        double x1 = (log(a_S0 / a_K) + (rateB - rateA + a_sigma * a_sigma / 2.0) * a_TTE) / xd;
         double x2 = x1 - xd;
-        double px = a_S0 * exp(-a_rateA * a_TTE) * Phi(x1) - a_K  * exp(-a_rateB * a_TTE) * Phi(x2);
+        double px = a_S0 * exp(-rateA * a_TTE) * Phi(x1) - a_K  * exp(-rateB * a_TTE) * Phi(x2);
         return px;
     }
     
     inline double BSMPxPut(double a_S0, 
                            double a_K, 
-                           double a_Ty, 
+                           double a_TTE, 
                            double rateA, 
                            double rateB, 
                            double a_sigma) 
     {
-        double px = BSMPxCall(a_S0, a_Ty, rateA, rateB, a_sigma) - S0 + exp(-rateB * a_Ty) * a_K;
+        double px = BSMPxCall(a_S0, a_K, a_TTE, rateA, rateB, a_sigma) - a_S0 + exp(-rateB * a_TTE) * a_K;
         assert(px > 0.);
         return px;
     }
     
     inline double BSMDeltaCall(double a_S0, 
                                double a_K, 
-                               double a_Ty, 
+                               double a_TTE, 
                                double rateA, 
                                double rateB, 
                                double a_sigma) 
@@ -54,18 +55,18 @@ namespace  {
         return (a_S0 < a_K) ? 0 : (a_S0 > a_K) ? 1 : 0.5;
 
         double xd = a_sigma * sqrt(a_TTE);
-        double x1 = (log(a_S0 / a_K) + (a_rateB - a_rateA + a_sigma * a_sigma / 2.0) * a_TTE) / xd;
+        double x1 = (log(a_S0 / a_K) + (rateB - rateA + a_sigma * a_sigma / 2.0) * a_TTE) / xd;
         return Phi(x1);
     }
     
     inline double BSMDeltaPut(double a_S0, 
                               double a_K, 
-                              double a_Ty, 
+                              double a_TTE, 
                               double rateA, 
                               double rateB, 
                               double a_sigma) 
     {
-        return BSMDeltaCall(a_S0, a_K, a_Ty, rateA, rateB, a_sigma) - 1.;
+        return BSMDeltaCall(a_S0, a_K, a_TTE, rateA, rateB, a_sigma) - 1.;
     }
     
 };
@@ -98,13 +99,16 @@ int main(const int argc, const char* argv[]) {
     double K                = atof(argv[6]);
     long T_days             = atol(argv[7]);
     double deltaAcc         = atof(argv[8]);
-    int tau_min             = atoi(argv[9]);
+    int tau_mins            = atoi(argv[9]);
     long P                  = atol(argv[10]);
     
     time_t t0               = time(nullptr);
     time_t T                = t0 + T_days*86400;
     double Ty               = 1970. + double(T_days)/365.25;
     double TTE              = IntervalYearFrac(T - t0);
+    
+    OptionFX const* opt = nullptr;
+    Diffusion_GBM diff = Diffusion_GBM(mu, sigma, s0);
     
     
     MCOptionHedger<decltype(diff), IRPConst, IRPConst, decltype(c1), decltype(c2)> hed(&diff, argv[1], argv[1], true);
@@ -115,30 +119,29 @@ int main(const int argc, const char* argv[]) {
     double rateB = hed.GetRateB(c2, 0.);
     
     //closures for deltas
-    function<double(double, double)> deltaCall([K, Ty, rateA, rateB, sigma](double a_St, double a_t) -> double {
-        double curTTE = Ty - a_t;  
-        return BSMDeltaCall(a_St, a_K, curTTE, rateA, rateB, a_sigma);
+    function<double(double, double)> deltaCall([K, Ty, rateA, rateB, sigma](double a_St, double a_tt) -> double {
+        double curTTE = Ty - a_tt;  
+        return BSMDeltaCall(a_St, K, curTTE, rateA, rateB, sigma);
     }
     );
     
-    function<double(double, double)> deltaPut([K, Ty, rateA, rateB, sigma](double a_St, double a_t) -> double {
-        double curTTE = Ty - a_t;
-        return BSMDeltaPut(a_St, a_K, curTTE, rateA, rateB, a_sigma);
+    function<double(double, double)> deltaPut([K, Ty, rateA, rateB, sigma](double a_St, double a_tt) -> double {
+        double curTTE = Ty - a_tt;
+        return BSMDeltaPut(a_St, K, curTTE, rateA, rateB, sigma);
     }
     );
         
-        
+    double C0 = 0.;
     
-    OptionFX const* opt = nullptr;
-    Diffusion_GBM diff = Diffusion_GBM(mu, sigma, s0);
+    
     if(strcmp(optionType, "Call") == 0) {
         opt = new EurCallOptionFX(c1, c2, K, T);
-        C0 = BSMPxCall(S0, K, TTE, rateA, rateB, a_sigma);
+        C0 = BSMPxCall(s0, K, TTE, rateA, rateB, sigma);
         deltaFunc = &deltaCall;
     }
     else {
         opt = new EurPutOptionFX(c1, c2, K, T);
-        C0 = BSMPxPut(S0, K, TTE, rateA, rateB, a_sigma);
+        C0 = BSMPxPut(s0, K, TTE, rateA, rateB, sigma);
         deltaFunc = &deltaPut;
     }
     
@@ -147,10 +150,10 @@ int main(const int argc, const char* argv[]) {
     
     //decltype(hed)::OHPathEval;
     
-    double EPnL = get<0>(res);
-    double StDPnL = get<1>(res);
-    double MinPnL = get<2>(res);
-    double MaxPnL = get<3>(res);
+    double EPnL     = get<0>(res);
+    double StDPnL   = get<1>(res);
+    double MinPnL   = get<2>(res);
+    double MaxPnL   = get<3>(res);
     
     cout << " E[PnL] = "  << EPnL  << "\n StD[PnL] = " << StDPnL
        << "\n Min[PnL] = " << MinPnL << "\n Max[PnL] = " << MaxPnL << endl;

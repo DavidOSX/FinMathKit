@@ -27,7 +27,6 @@ inline void MCEngine <Diffusion,
                       PathEvaluator> :: Simulate(time_t                         a_t0, 
                                                time_t                           a_T, 
                                                int                              a_tau_min,
-                                               /*double                           a_S0,*/
                                                long                             a_P,
                                                bool                             a_useTimerSeed,
                                                Diffusion const*                 a_diff, 
@@ -82,7 +81,8 @@ inline void MCEngine <Diffusion,
                          // P = PI * PM;
                           
                           //
-                          
+                          double Pminh = std::min<long>(a_P, PMh);
+                          double Pmin = std::min<long>(P, PM);
                          
                           
                           for(long l = 0; l < L - 1;  ++l) m_ts[l] = y0 + double(l) * tau;
@@ -92,7 +92,7 @@ inline void MCEngine <Diffusion,
                           
                           for(long i = 0; i < PI; ++i) {
                         //std::cout << 1 << std::endl;
-                            for(long p = 0; p < std::min<long>(a_P, PMh); ++p) {
+                            for(long p = 0; p < Pminh; ++p) {
                               double* path0 = m_paths + 2 * p * L;
                               double* path1 = path0 + L;
                               path0[0] = a_diff -> GetStartPoint();
@@ -129,7 +129,7 @@ inline void MCEngine <Diffusion,
                                 Sp0 = Sn0;
                                 Sp1 = Sn1;
                             }
-                          }  (*a_pathEval)(L, std::min<long>(P, PM), m_paths, m_ts); //evaluate in-memory paths
+                          }  (*a_pathEval)(L, Pmin, m_paths, m_ts); //evaluate in-memory paths
                         } //m_L = L; m_P = P;
                       }
 };

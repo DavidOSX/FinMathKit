@@ -2,8 +2,7 @@
 #include <iostream>
 #include <tuple>
 #include <time.h>
-#include "Diffusion.h"
-#include "IRProviderConst.h"
+
 
 namespace SiriusFM {
 
@@ -42,7 +41,6 @@ public:
     template<bool> void Simulate(time_t                       a_t0, 
                                  time_t                       a_T, 
                                  int                          a_tau_min,
-                                 /*double                       a_S0,*/
                                  long                         a_P,
                                  bool                         a_useTimerSeed,
                                  Diffusion const*             a_diff, 

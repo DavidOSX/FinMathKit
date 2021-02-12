@@ -1,6 +1,7 @@
 
 #pragma once
 #include "Options.h"
+#include "MonteCarlo.h"
 
 namespace SiriusFM {
 
@@ -20,16 +21,16 @@ private:
         long m_P; // total paths
         double m_sum; //sum of payoff
         double m_sum2; // sum of  payoff^2
-        //double m_minPO; // min PayOff
-        //double m_maxPO; // m_maxPO
+        double m_minPO; // min PayOff
+        double m_maxPO; // m_maxPO
     public:
         OPPathEval(Option<AssetClassA, AssetClassB> const * a_option):
         m_option(a_option),
         m_P     (0),
         m_sum   (0),
-        m_sum2  (0)
-        //m_minPO (infty),
-        //m_maxPO (-infty)
+        m_sum2  (0),
+        m_minPO (INFINITY),
+        m_maxPO (-INFINITY)
         { 
             assert(m_option != nullptr); 
         }
@@ -43,17 +44,17 @@ private:
                 double payOff      = m_option -> payoff(a_L, a_ts, path);
                 m_sum += payOff;
                 m_sum2 += payOff * payOff;
-                //m_minPO = std::min<double>(m_minPO, payOff);
-                //m_maxPO = std::max<double>(m_maxPO, payOff);
+                m_minPO = std::min<double>(m_minPO, payOff);
+                m_maxPO = std::max<double>(m_maxPO, payOff);
             }  m_P += a_PM;
         }
         
-        std::pair<double, double> GetPxStats() const { //double GetPx
+        std::tuple<double, double, double, double> GetStats() const { //double GetPx
             if(m_P < 2) throw std::runtime_error("empty OPPathEval");
             double px = m_sum / double(m_P);
-            double var = m_sum2 - double(m_P) * px * px;
-            double err = (px != 0) ?  (fabs(px) / sqrt(var)) : sqrt(var);
-            return std::make_pair(px, err);
+            double err = m_sum2 - double(m_P) * px * px;
+            //double err = (px != 0) ?  (fabs(px) / sqrt(var)) : sqrt(var);
+            return std::make_tuple(px, sqrt(err), m_minPO, m_maxPO); 
         }
         //std::tuple GetStats
 };
@@ -67,6 +68,7 @@ private:
              AssetClassB, 
              OPPathEval>        m_mce;
     bool                        m_useTimerSeed;
+    
     
 public:
     

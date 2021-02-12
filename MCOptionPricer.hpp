@@ -1,3 +1,4 @@
+
 #include "MCOptionPricer.h"
 
 namespace SiriusFM {
@@ -23,8 +24,9 @@ inline double MCOptionPricer <Diffusion,
                                 m_mce.printPaths(m_diff -> GetStartPoint());
                                 
               
-                                auto res = pathEval.GetPxStats();
-                                double px = res.first; 
+                                auto res = pathEval.GetStats();
+                                double px = std::get<0>(res); 
+                                //std::cout << 
               
                                 px *= m_birp.DF(a_option->assetB(), a_t0, a_option -> ExpirTime());
                     
