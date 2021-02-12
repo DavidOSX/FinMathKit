@@ -74,7 +74,12 @@ private:
             if (m_rsA == nullptr){
                 m_rsA = new double[a_L];
                 for (long l = 0; l < a_L; ++l)
-                    m_rsA[l] = m_airp -> r(m->option->assetA, t);
+                    m_rsA[l] = m_airp -> r(m->option->assetA(), t);
+            }
+            if (m_rsB == nullptr){
+                m_rsB = new double[a_L];
+                for (long l = 0; l < a_L; ++l)
+                    m_rsB[l] = m_birp -> r(m->option->assetB(), t);
             }
             for (long p = 0; p < a_PM; ++p) {
                 
@@ -117,15 +122,19 @@ private:
         }
         
         std::pair<double, double> GetPxStats() const { //double GetPx
-            if(m_P < 2) throw std::runtime_error("empty OPPathEval");
-            double px = m_sum / double(m_P);
-            double var = m_sum2 - double(m_P) * px * px;
-            double err = (px != 0) ?  (fabs(px) / sqrt(var)) : sqrt(var);
-            return std::make_pair(px, err);
+                    if(m_P < 2) throw std::runtime_error("empty OPPathEval");
+                    double px = m_sum / double(m_P);
+                    double var = m_sum2 - double(m_P) * px * px;
+                    double err = (px != 0) ?  (fabs(px) / sqrt(var)) : sqrt(var);
+                    return std::make_pair(px, err);
         }
         //std::tuple GetStats
         std::tuple<double, double, double, double> GetStats() {
-            
+                    if (m_P < 2)   throw std::runtime_error("empty OHPathEval");
+                    double mean =  m_sumPnL  / double(m_P);
+                    double var  = (m_sumPnL2 - double(m_P) * mean * mean) / double(m_P - 1);
+                    assert(var >= 0);
+                    return std::make_tuple(mean, sqrt(var), m_minPnL, m_maxPnL);
         }
         
         ~OHPathEval() { 
@@ -148,7 +157,7 @@ private:
     
 public:
     
-    MCOptionPricer(Diffusion const* a_diff,
+    MCOptionHedger(Diffusion const* a_diff,
                    const char*      a_fileA,
                    const char*      a_fileB,
                    bool             a_useTimerSeed):
