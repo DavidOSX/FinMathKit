@@ -159,7 +159,15 @@ namespace SiriusFM {
                           int                                     a_tauMins,
                           long                                    a_P
                          );
-          };
+                         
+           double GetRateA(AssetClassA a_A, double a_ty) const { 
+                    return m_irpA.r(a_A, a_ty); 
+           }
+
+          double GetRateB(AssetClassB a_B, double a_ty) const { 
+                    return m_irpB.r(a_tB, a_ty); 
+          }
+      };
 
 };   
         
