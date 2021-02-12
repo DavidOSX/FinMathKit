@@ -36,5 +36,10 @@ add_library(IRProvider IRProvider.cpp)
 target_link_libraries(pricer PUBLIC IRProvider)
 target_link_libraries(hedger PUBLIC IRProvider)
 
+install(TARGETS IRProvider DESTINATION lib)
+install(TARGETS pricer hedger DESTINATION bin)
+install(FILES *.h *.hpp DESTINATION include)
+install(FILES *.cpp DESTINATION source)
+
 
 
