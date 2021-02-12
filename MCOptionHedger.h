@@ -169,10 +169,10 @@ public:
                    {}
                    
     double SimulateHedging(Option<AssetClassA, AssetClassB> const* a_option,
-              time_t a_t0,
-              int a_tauMins,
-              long a_P
-             );
+                           time_t a_t0,
+                           int a_tauMins,
+                           long a_P
+                           );
 };
 
 };   
