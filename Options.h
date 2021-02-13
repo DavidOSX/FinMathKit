@@ -1,9 +1,9 @@
 #pragma once
 
  
-namespace SiriusFM {
+namespace SiriusFM { 
     
-template <typename AssetClassA, typename AssetClassB>
+template <typename AssetClassA, typename AssetClassB> 
 class Option {
 protected:
     AssetClassA const m_assetA;
