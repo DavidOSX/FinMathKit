@@ -1,7 +1,9 @@
 #pragma once
+
 #include <iostream>
 #include <tuple>
 #include <time.h>
+#include "Time.h"
 
 
 namespace SiriusFM {
@@ -69,6 +71,8 @@ public:
     ~MCEngine() { 
         delete[] m_paths; 
         delete[] m_ts;
+        //m_paths = nullptr;
+        //m_ts = nullptr;
         //const_cast<MCEngine>
     }
                     

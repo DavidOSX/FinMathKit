@@ -1,16 +1,11 @@
-
+#pragma once
 #include <cassert>
 #include <random>
-#include "Time.h"
 #include "MonteCarlo.h"
 
 
 namespace SiriusFM
 {
-    
-
-
-
 
 template <typename Diffusion, 
           typename AProvider, 

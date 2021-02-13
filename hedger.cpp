@@ -1,10 +1,10 @@
 #include "Diffusion.h"
 #include "IRProviderConst.h"
-#include "MonteCarlo.hpp"
 #include "Vanillas.h"
 #include "MCOptionHedger.hpp"
+#include "BSM.hpp"
 
-namespace  {
+/*namespace  {
     //BSM Pricer:
     inline double Phi(double x) {
         
@@ -69,7 +69,7 @@ namespace  {
         return BSMDeltaCall(a_S0, a_K, a_TTE, rateA, rateB, a_sigma) - 1.;
     }
     
-};
+};*/
 
 
 using namespace SiriusFM;
@@ -77,14 +77,16 @@ using namespace std;
 
 int main(const int argc, const char* argv[]) {
     
-    CcyE c1 = CcyE::USD;
-    CcyE c2 = CcyE::CHF;
     
     if(argc < 11) {
         cerr << "not enough params\n" << endl;
         cerr << "params: \"name file with rates\" mu, sigma, S0, Call/Put, K, Tdays, deltaAcc, tau_mins, P\n";
         return 1;
     }
+    
+    CcyE c1 = CcyE::USD;
+    CcyE c2 = CcyE::CHF;
+    
     
     //IRProvider<IRMode::Const> irp = IRProvider<IRMode::Const>(argv[1]);
     
@@ -103,7 +105,7 @@ int main(const int argc, const char* argv[]) {
     long P                  = atol(argv[10]);
     
     time_t t0               = time(nullptr);
-    time_t T                = t0 + T_days*86400;
+    time_t T                = t0 + T_days * 86400;
     double Ty               = 1970. + double(T_days)/365.25;
     double TTE              = IntervalYearFrac(T - t0);
     

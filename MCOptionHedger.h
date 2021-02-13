@@ -2,7 +2,7 @@
 #pragma once
 #include <functional>
 #include "Options.h"
-#include "MonteCarlo.h"
+#include "MonteCarlo.hpp"
 
 namespace SiriusFM {
 
@@ -143,7 +143,7 @@ namespace SiriusFM {
                     OHPathEval>       m_mce;
           bool                        m_useTimerSeed;
     
-      public:
+      public:  
     
           MCOptionHedger(Diffusion const* a_diff,
                    const char*      a_fileA,
@@ -165,11 +165,11 @@ namespace SiriusFM {
                           int                                     a_tauMins,
                           long                                    a_P);
                          
-           double GetRateA(AssetClassA a_A, double a_ty) const { 
+           inline double GetRateA(AssetClassA a_A, double a_ty) const { 
                     return m_airp.r(a_A, a_ty); 
            }
 
-          double GetRateB(AssetClassB a_B, double a_ty) const { 
+           inline double GetRateB(AssetClassB a_B, double a_ty) const { 
                     return m_birp.r(a_B, a_ty); 
           }
       };

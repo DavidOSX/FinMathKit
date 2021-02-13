@@ -1,7 +1,7 @@
 
 #pragma once
 #include "Options.h"
-#include "MonteCarlo.h"
+#include "MonteCarlo.hpp"
 
 namespace SiriusFM {
 
@@ -32,7 +32,7 @@ private:
         m_minPO (INFINITY),
         m_maxPO (-INFINITY)
         { 
-            assert(m_option != nullptr); 
+            assert(m_option != nullptr);  
         }
         void operator() (long a_L, 
                          long a_PM, 
@@ -46,9 +46,9 @@ private:
                 m_sum2 += payOff * payOff;
                 m_minPO = std::min<double>(m_minPO, payOff);
                 m_maxPO = std::max<double>(m_maxPO, payOff);
-            }  m_P += a_PM;
+            }   m_P += a_PM;
         }
-        
+         
         std::tuple<double, double, double, double> GetStats() const { //double GetPx
             if(m_P < 2) throw std::runtime_error("empty OPPathEval");
             double px = m_sum / double(m_P);
@@ -88,6 +88,13 @@ public:
               int a_tauMins,
               long a_P
              );
+    inline double GetRateA(AssetClassA a_A, double a_ty) const { 
+                    return m_airp.r(a_A, a_ty); 
+    }
+
+    inline double GetRateB(AssetClassB a_B, double a_ty) const { 
+                    return m_birp.r(a_B, a_ty); 
+    } 
 };
 
 };   

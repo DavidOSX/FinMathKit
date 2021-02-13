@@ -1,4 +1,4 @@
-
+#pragma once
 #include "MCOptionPricer.h"
 
 namespace SiriusFM {
