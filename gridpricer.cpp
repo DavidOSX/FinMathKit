@@ -5,18 +5,18 @@
 #include "BSM.hpp"
 
 
-using namespace SiriusFM;
+using namespace SiriusFM; 
 using namespace std;
 
 int main(const int argc, const char* argv[])
-{
+{ 
 	if(argc != 9)
 	{
 		cerr << "params: \"file with rates\" sigma, S0, {Call/Put}, K, Tdays, NS, tauMins\n";
 		return 1;
 	}
 	
-	CcyE c1 = CcyE::USD;
+	CcyE c1 = CcyE::USD; 
     CcyE c2 = CcyE::CHF;
     
 	double sigma        = atof(argv[2]);

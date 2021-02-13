@@ -74,12 +74,45 @@ endforeach ( TARGET )
 
                            ###########
 ########################  # install #  ###################################
-#                        ###########                                    #
+#                        ###########                                     #
 install(FILES ${SOURCES} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/sources)#
 install(FILES ${HEADERS} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include)#
 #                                                                        #
 ##########################################################################
 
+                   ###########
+################# # testing # #################
+                 ###########
+                 
+enable_testing()
+
+function(do_test1 TARGET1 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9 )
+  add_test(Test1  ${TARGET1} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+  #set_tests_properties(Test1
+  #                     PROPERTIES PASS_REGULAR_EXPRESSION ${RESULT} )
+endfunction(do_test1)
+
+function(do_test2 TARGET2 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9 ARG10 )
+  add_test(Test2  ${TARGET2} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+  #set_tests_properties(Test2 
+   #                    PROPERTIES PASS_REGULAR_EXPRESSION ${RESULT} )
+endfunction(do_test2)
+
+function(do_test3 TARGET3 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 )
+  add_test(Test3 ${TARGET3} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+  #set_tests_properties(Test3
+  #                     PROPERTIES PASS_REGULAR_EXPRESSION ${RESULT} )
+endfunction(do_test3)
+
+do_test1(${CMAKE_CURRENT_SOURCE_DIR}/bin/pricer "DATA.txt" 0 0.25 100 "Call" 100 90 30 2048 )
+do_test1(${CMAKE_CURRENT_SOURCE_DIR}/bin/pricer "DATA.txt" 0 0.25 100 "Put" 100 90 30 2048 )
+                 
+do_test2(${CMAKE_CURRENT_SOURCE_DIR}/bin/hedger "DATA.txt" 0 0.25 100 "Call" 100 90 0.01 30 2048)
+do_test2(${CMAKE_CURRENT_SOURCE_DIR}/bin/hedger "DATA.txt" 0 0.25 100 "Put" 100 90 0.01 30 2048)
+
+do_test3(${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Call" 100 90 100 10)  
+                 
+##############################################
 
 #######Settings flags######
 #if(APPLE)

@@ -138,18 +138,18 @@ int main(const int argc, const char* argv[]) {
     
     if(strcmp(optionType, "Call") == 0) {
         opt = new EurCallOptionFX(c1, c2, K, T);
-        C0 = BSMPxCall(s0, K, TTE, rateA, rateB, sigma);
+        C0 = BSMPxCall(s0, K, TTE, rateA, rateB, sigma); 
         deltaFunc = &deltaCall;
     }
     else {
         opt = new EurPutOptionFX(c1, c2, K, T);
-        C0 = BSMPxPut(s0, K, TTE, rateA, rateB, sigma);
+        C0 = BSMPxPut(s0, K, TTE, rateA, rateB, sigma); 
         deltaFunc = &deltaPut;
-    }
+    } 
     
   
     auto res = hed.SimulateHedging(opt, t0, C0, deltaFunc, deltaAcc, tau_mins, P);
-    
+     
     //decltype(hed)::OHPathEval;
     
     double EPnL     = get<0>(res);

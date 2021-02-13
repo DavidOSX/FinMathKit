@@ -19,7 +19,7 @@ namespace SiriusFM {
                 AProvider, 
                 BProvider,
                 AssetClassA, 
-                AssetClassB>::RunBI(Option<AssetClassA, AssetClassB> const* a_option,
+                AssetClassB>::RunBI(Option<AssetClassA, AssetClassB> const* a_option, 
                                     Diffusion const*    a_diff,
                                     double              a_S0,
                                     time_t              a_t0,
