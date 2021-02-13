@@ -74,7 +74,7 @@ endforeach ( TARGET )
 
                            ###########
 ########################  # install #  ###################################
-#                        ###########                                    #
+#                        ###########                                     #
 install(FILES ${SOURCES} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/sources)#
 install(FILES ${HEADERS} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include)#
 #                                                                        #
