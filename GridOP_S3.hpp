@@ -15,15 +15,14 @@ namespace SiriusFM {
             typename AssetClassA, 
             typename AssetClassB>
     inline void class GridNOP::RunBI(Option<AssetClassA, AssetClassB> const* a_option,
-                                    
                                     Diffusion const*    a_diff,
-                                     char const*        a_irsfileA,
-                                     char const*        a_irsfileB,
+                                    char const*        a_irsfileA,
+                                    char const*        a_irsfileB,
                                     double              a_S0,
-                                     time_t              a_t0,
-                                    long                a_N = ,
-                                    int                 a_tauMins = 30,
-                                    double              a_BFactor = 4.5
+                                    time_t              a_t0,
+                                    long                a_N,
+                                    int                 a_tauMins,
+                                    double              a_BFactor
                                     ) 
                 {
                     double TTE = IntervalYearFrac(a_option->ExpirTime() - a_t0);
@@ -39,10 +38,11 @@ namespace SiriusFM {
                     
                     for (int j = 0; j < M; ++j) {
                         m_ts[j] = YearFrac(a_t0 + j * tauSecs);
+        
+                        double rA = m_airp.r(a-option -> assetA(), m_ts[j]); 
+                        double rB = m_birp.r(a-option -> assetB(), m_ts[j]);
                         
-                        
-                        double rB = m_airp.r(a-option -> assetA(), m_ts[j]); 
-                        double rateDiff
+                        double rateDiff = 
                     
                     
                     

@@ -50,12 +50,14 @@ namespace SiriusFM {
         }
         
         void RunBI (Option<AssetClassA, AssetClassB> const* a_option,
-                    time_t a_t0,
-                    double a_S0,
-                    long   a_N,
-                    int    a_tauMins
-                    
-                    
+                    Diffusion const* a_diff,
+                    char const* a_fileA,
+                    char const* a_fileB,
+                    double      a_S0,
+                    time_t      a_t0,
+                    long        a_N,
+                    int         a_tauMins,
+                    double      a_BFactor
                    );500 30 4.5
     };
 };
