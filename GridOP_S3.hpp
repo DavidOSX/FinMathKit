@@ -10,10 +10,10 @@ namespace SiriusFM {
 
 
     template <typename Diffusion, 
-            typename AProvider, 
-            typename BProvider, 
-            typename AssetClassA, 
-            typename AssetClassB>
+             typename AProvider, 
+             typename BProvider, 
+             typename AssetClassA, 
+             typename AssetClassB>
     inline void class GridNOP::RunBI(Option<AssetClassA, AssetClassB> const* a_option,
                                     Diffusion const*    a_diff,
                                     char const*        a_irsfileA,
@@ -42,7 +42,15 @@ namespace SiriusFM {
                         double rA = m_airp.r(a-option -> assetA(), m_ts[j]); 
                         double rB = m_birp.r(a-option -> assetB(), m_ts[j]);
                         
-                        double rateDiff = 
+                        double rateDiff = std:: max<double>(rB-rA,0);
+                    }
+                    
+                    if(j < M-1) {
+                        integAB += rateDiff * tau;
+                        m_ES[j+1] = a_S0 * exp(integAB);
+                        double sigma = 
+                        
+                    }
                     
                     
                     
