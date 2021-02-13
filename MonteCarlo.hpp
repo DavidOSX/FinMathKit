@@ -59,7 +59,7 @@ inline void MCEngine <Diffusion,
                           if(L > m_MaxL) std::invalid_argument("too many steps");
                           
                           double stau = sqrt(tau);
-                           double tlast = (Tsec%tau_sec == 0)? tau :IntervalYearFrac(Tsec-(L-1)*tau_sec);
+                           double tlast = (Tsec%tau_sec == 0)? tau :IntervalYearFrac(Tsec-(L - 2)*tau_sec);
                           //yT - y0 - double(L - 2)*tau;
                           assert(tlast <= tau && 0 < tlast);
                           double slast = sqrt(tlast);
@@ -91,7 +91,7 @@ inline void MCEngine <Diffusion,
                          
                           
                           for(long i = 0; i < PI; ++i) {
-                        //std::cout << 1 << std::endl;
+                            //#pragma acc parallel loop
                             for(long p = 0; p < Pminh; ++p) {
                               double* path0 = m_paths + 2 * p * L;
                               double* path1 = path0 + L;

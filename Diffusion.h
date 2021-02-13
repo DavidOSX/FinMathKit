@@ -30,7 +30,7 @@ public:
     }    
 
 };
-
+/*
 class Diffusion_CEV {
 private:
     double const m_mu;
@@ -116,6 +116,6 @@ class CIR {
             if(m_sigma <= 0) throw std:: invalid_argument("bad sigma"); 
         }
 
-};
+};*/
 };
 

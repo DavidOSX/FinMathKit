@@ -4,6 +4,7 @@ project(Foo)
 
 ########Setting#######
 set(CMAKE_CXX_COMPILER "clang++")
+#set(CMAKE_CXX_COMPILER "nvc++")
 set(SOURCES main.cpp 
             IRProvider.cpp 
             mainhedge.cpp)
@@ -30,9 +31,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 #######Settings flags######
 #if(APPLE)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -std=c++17 -O2")
 #else()
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -acc=gpu -O2")
 #endif()
 ############
 
