@@ -27,6 +27,10 @@ namespace SiriusFM {
         double* const m_S;
         double* const m_ES;
         double* const m_VarS;
+        int           m_M;
+        int           m_i0;
+        int           m_N;
+        bool          m_isFwd;
         
     public:
         GridNOP(char const * a_fileA, char const * a_fileB, long a_maxM = 210384, long a_maxN = 2048): 
@@ -38,8 +42,18 @@ namespace SiriusFM {
         m_ts(new double[m_maxM]),
         m_S(new double[m_maxN]),
         m_ES(new double[m_maxM]),
-        m_VarS(new double[m_maxM])
-        {}
+        m_VarS(new double[m_maxM]),
+        m_M(0),
+        m_i0(0),
+        m_N(0),
+        m_isFwd(false)
+        { 
+            memset(m_grid, 0, m_maxN * m_maxM * sizeof(double)); 
+            memset(m_ts, 0, m_maxM * sizeof(double));
+            memset(m_S, 0, m_maxN * sizeof(double));
+            memset(m_ES, 0, m_maxM * sizeof(double));
+            memset(m_VarS, 0, m_maxM * sizeof(double));
+        }
         
         ~GridNOP() {
             delete[] (m_grid);
@@ -55,6 +69,7 @@ namespace SiriusFM {
             
         }
         
+        template<bool isFwd>
         void RunBI (Option<AssetClassA, AssetClassB> const* a_option,
                     Diffusion const* a_diff,
                     double      a_S0,
@@ -63,6 +78,9 @@ namespace SiriusFM {
                     int         a_tauMins = 30,
                     double      a_BFactor = 4.5
                    );
+        
+        std::tuple<double, double, double> GetPriceDeltaGamma() const;
+        
     };
 };
                     
