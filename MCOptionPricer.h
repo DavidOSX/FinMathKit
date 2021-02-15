@@ -32,8 +32,8 @@ private:
         m_minPO (INFINITY),
         m_maxPO (-INFINITY)
         { 
-            assert(m_option != nullptr);  
-        }
+            assert(m_option != nullptr);   
+        } 
         void operator() (long a_L, 
                          long a_PM, 
                          double const* a_paths, 

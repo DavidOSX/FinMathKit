@@ -11,13 +11,13 @@ using namespace std;
 
 int main(const int argc, const char* argv[]) {
     
-    if(argc < 10) {
+    if(argc < 11) {
         cerr << "not enough params\n";
         return 1;
     }
     
-    CcyE c1 = CcyE::USD;
-    CcyE c2 = CcyE::CHF;
+    CcyE c2 = CcyE::USD;
+    CcyE c1 = CcyE::CHF;
     
     //IRProvider<IRMode::Const> irp = IRProvider<IRMode::Const>(argv[1]);
     
@@ -33,6 +33,7 @@ int main(const int argc, const char* argv[]) {
     long T_days = atol(argv[7]);
     int tau_min = atoi(argv[8]);
     long P = atol(argv[9]);
+    bool isAmerican = bool(atoi(argv[10]));
     
     time_t t0 = time(nullptr);
     time_t T = t0 + T_days*86400;
@@ -41,8 +42,8 @@ int main(const int argc, const char* argv[]) {
     
     OptionFX const* opt;
     Diffusion_GBM diff = Diffusion_GBM(mu, sigma, s0);
-    if(strcmp(optionType, "Call") == 0) opt = new EurCallOptionFX(c1, c2, K, T);
-    else opt = new EurPutOptionFX(c1, c2, K, T);
+    if(strcmp(optionType, "Call") == 0) opt = new CallOptionFX(c1, c2, K, T, isAmerican);
+    else opt = new PutOptionFX(c1, c2, K, T, isAmerican);
     
     
     MCOptionPricer<decltype(diff), IRPConst, IRPConst, decltype(c1), decltype(c2)> pr(&diff, argv[1], argv[1], true);
