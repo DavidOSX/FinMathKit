@@ -10,7 +10,7 @@ set(CMAKE_CXX_COMPILER "clang++")
 #set(CMAKE_CXX_COMPILER "nvc++")
 #set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-10")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O2")
 
 set(SOURCES pricer.cpp 
             hedger.cpp
@@ -87,31 +87,36 @@ install(FILES ${HEADERS} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include)#
                  
 enable_testing()
 
-function(do_test1 TARGET1 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9 ARG10)
-  add_test(Test1  ${TARGET1} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} )
+function(do_test1 NUM TARGET1 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9 ARG10)
+  add_test(Test${NUM}  ${TARGET1} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} )
   #set_tests_properties(Test1 ...)
 endfunction(do_test1)
 
-function(do_test2 TARGET2 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9 ARG10 ARG11)
-  add_test(Test2  ${TARGET2} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} ${ARG11} )
+function(do_test2 NUM TARGET2 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9 ARG10 ARG11)
+  add_test(Test${NUM}  ${TARGET2} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} ${ARG11} )
   #set_tests_properties(Test2 ...) 
 endfunction(do_test2)
 
-function(do_test3 TARGET3 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9)
-  add_test(Test3 ${TARGET3} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} )
+function(do_test3 NUM TARGET3 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9)
+  add_test(Test${NUM} ${TARGET3} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} )
   #set_tests_properties(Test3 ...)
 endfunction(do_test3)
 
-do_test1(${CMAKE_CURRENT_SOURCE_DIR}/bin/pricer "DATA.txt" 0 0.25 100 "Call" 100 90 30 2048 false)
-do_test1(${CMAKE_CURRENT_SOURCE_DIR}/bin/pricer "DATA.txt" 0 0.25 100 "Put" 100 90 30 2048 false)
-                 
-do_test2(${CMAKE_CURRENT_SOURCE_DIR}/bin/hedger "DATA.txt" 0 0.25 100 "Call" 100 90 0.01 30 2048 false)
-do_test2(${CMAKE_CURRENT_SOURCE_DIR}/bin/hedger "DATA.txt" 0 0.25 100 "Put" 100 90 0.01 30 2048 false)
+do_test1(1 ${CMAKE_CURRENT_SOURCE_DIR}/bin/pricer "DATA.txt" 0 0.25 100 "Call" 100 90 30 2048 false)
 
-do_test3(${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Call" 100 90 1024 5 false)
-do_test3(${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Put" 100 90 1024 5 false)
-do_test3(${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Call" 100 90 1024 5 true)
-do_test3(${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Put" 100 90 1024 5 true)
+do_test1(2 ${CMAKE_CURRENT_SOURCE_DIR}/bin/pricer "DATA.txt" 0 0.25 100 "Put" 100 90 30 2048 false)
+                 
+do_test2(3 ${CMAKE_CURRENT_SOURCE_DIR}/bin/hedger "DATA.txt" 0 0.25 100 "Call" 100 90 0.01 30 2048 false)
+
+do_test2(4 ${CMAKE_CURRENT_SOURCE_DIR}/bin/hedger "DATA.txt" 0 0.25 100 "Put" 100 90 0.01 30 2048 false)
+
+do_test3(5 ${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Call" 100 90 1024 5 false)
+
+do_test3(6 ${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Put" 100 90 1024 5 false)
+
+do_test3(7 ${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Call" 100 90 1024 5 true)
+
+do_test3(8 ${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Put" 100 90 1024 5 true)
                  
 ##############################################
 
