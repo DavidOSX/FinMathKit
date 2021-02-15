@@ -4,73 +4,6 @@
 #include "MCOptionHedger.hpp"
 #include "BSM.hpp"
 
-/*namespace  {
-    //BSM Pricer:
-    inline double Phi(double x) {
-        
-        return 0.5 * (1. + erf(x / M_SQRT2));
-        
-    }
-    
-    inline double BSMPxCall(double a_S0, 
-                            double a_K, 
-                            double a_TTE, 
-                            double rateA, 
-                            double rateB, 
-                            double a_sigma) 
-    {
-        assert(a_S0 > 0 && a_K > 0 && a_sigma > 0);
-        if (a_TTE <= 0)
-        // Return PayOff:
-        return std::max<double>(a_S0 - a_K, 0);
-
-        double xd = a_sigma * sqrt(a_TTE);
-        double x1 = (log(a_S0 / a_K) + (rateB - rateA + a_sigma * a_sigma / 2.0) * a_TTE) / xd;
-        double x2 = x1 - xd;
-        double px = a_S0 * exp(-rateA * a_TTE) * Phi(x1) - a_K  * exp(-rateB * a_TTE) * Phi(x2);
-        return px;
-    }
-    
-    inline double BSMPxPut(double a_S0, 
-                           double a_K, 
-                           double a_TTE, 
-                           double rateA, 
-                           double rateB, 
-                           double a_sigma) 
-    {
-        double px = BSMPxCall(a_S0, a_K, a_TTE, rateA, rateB, a_sigma) - a_S0 + exp(-rateB * a_TTE) * a_K;
-        assert(px > 0.);
-        return px;
-    }
-    
-    inline double BSMDeltaCall(double a_S0, 
-                               double a_K, 
-                               double a_TTE, 
-                               double rateA, 
-                               double rateB, 
-                               double a_sigma) 
-    {
-        assert(a_S0 > 0 && a_K > 0 && a_sigma > 0);
-        if (a_TTE <= 0)
-        return (a_S0 < a_K) ? 0 : (a_S0 > a_K) ? 1 : 0.5;
-
-        double xd = a_sigma * sqrt(a_TTE);
-        double x1 = (log(a_S0 / a_K) + (rateB - rateA + a_sigma * a_sigma / 2.0) * a_TTE) / xd;
-        return Phi(x1);
-    }
-    
-    inline double BSMDeltaPut(double a_S0, 
-                              double a_K, 
-                              double a_TTE, 
-                              double rateA, 
-                              double rateB, 
-                              double a_sigma) 
-    {
-        return BSMDeltaCall(a_S0, a_K, a_TTE, rateA, rateB, a_sigma) - 1.;
-    }
-    
-};*/
-
 
 using namespace SiriusFM;
 using namespace std;
@@ -78,14 +11,14 @@ using namespace std;
 int main(const int argc, const char* argv[]) {
     
     
-    if(argc < 11) {
+    if(argc < 12) {
         cerr << "not enough params\n" << endl;
-        cerr << "params: \"name file with rates\" mu, sigma, S0, Call/Put, K, Tdays, deltaAcc, tau_mins, P\n";
+        cerr << "params: \"name file with rates\" mu, sigma, S0, Call/Put, K, Tdays, deltaAcc, tau_mins, P, isAmerican\n";
         return 1;
     }
     
-    CcyE c1 = CcyE::USD;
-    CcyE c2 = CcyE::CHF;
+    CcyE c2 = CcyE::USD;
+    CcyE c1 = CcyE::CHF;
     
     
     //IRProvider<IRMode::Const> irp = IRProvider<IRMode::Const>(argv[1]);
@@ -103,6 +36,7 @@ int main(const int argc, const char* argv[]) {
     double deltaAcc         = atof(argv[8]);
     int tau_mins            = atoi(argv[9]);
     long P                  = atol(argv[10]);
+    bool isAmerican         = bool(atoi(argv[11]));
     
     time_t t0               = time(nullptr);
     time_t T                = t0 + T_days * 86400;
@@ -137,12 +71,12 @@ int main(const int argc, const char* argv[]) {
     
     
     if(strcmp(optionType, "Call") == 0) {
-        opt = new EurCallOptionFX(c1, c2, K, T);
+        opt = new CallOptionFX(c1, c2, K, T, isAmerican);
         C0 = BSMPxCall(s0, K, TTE, rateA, rateB, sigma); 
         deltaFunc = &deltaCall;
     }
     else {
-        opt = new EurPutOptionFX(c1, c2, K, T);
+        opt = new PutOptionFX(c1, c2, K, T, isAmerican);
         C0 = BSMPxPut(s0, K, TTE, rateA, rateB, sigma); 
         deltaFunc = &deltaPut;
     } 
@@ -157,8 +91,10 @@ int main(const int argc, const char* argv[]) {
     double MinPnL   = get<2>(res);
     double MaxPnL   = get<3>(res);
     
-    cout << " E[PnL] = "  << EPnL  << "\n StD[PnL] = " << StDPnL
-       << "\n Min[PnL] = " << MinPnL << "\n Max[PnL] = " << MaxPnL << endl;
+    cout << " E[PnL]   = "  << EPnL  
+       << "\n StD[PnL] = " << StDPnL
+       << "\n Min[PnL] = " << MinPnL 
+       << "\n Max[PnL] = " << MaxPnL << endl;
     
     
     delete opt;

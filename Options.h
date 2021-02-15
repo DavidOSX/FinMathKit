@@ -8,17 +8,21 @@ class Option {
 protected:
     AssetClassA const m_assetA;
     AssetClassB const m_assetB;
-    bool const        m_isAmerican;
     time_t            m_expirTime;
+    bool const        m_isAmerican;
+    bool const        m_isAsian;
+    
     
     Option(AssetClassA a_assetA, 
            AssetClassB a_assetB, 
            time_t a_Tdays, 
-           bool a_isAmerican):
+           bool a_isAmerican,
+           bool a_isAsian):
     m_assetA        (a_assetA),
     m_assetB        (a_assetB),
     m_expirTime     (a_Tdays),
-    m_isAmerican    (a_isAmerican)
+    m_isAmerican    (a_isAmerican),
+    m_isAsian       (a_isAsian)
     {}
 public: 
     
@@ -26,12 +30,15 @@ public:
     time_t ExpirTime() const {
         return m_expirTime;
     }
-    AssetClassA assetA() const {
+    inline AssetClassA assetA() const {
         return m_assetA;
     }
-    
-    AssetClassB assetB() const {
+     
+    inline AssetClassB assetB() const {
         return m_assetB;
+    }
+    inline bool isAmerican() const {
+        return m_isAmerican;
     }
     
     virtual ~Option() {} 
