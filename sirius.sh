@@ -2,4 +2,4 @@
 
 cmake . 
 make 
-ctest
+ctest -VV
