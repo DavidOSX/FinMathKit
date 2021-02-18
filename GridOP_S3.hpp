@@ -1,6 +1,8 @@
 
 #pragma once
 #include "GridOp_S3.h"
+//#include <omp.h>
+//#incl
 
 // ================================
 //      ""
@@ -50,14 +52,14 @@ namespace SiriusFM {
                         double rA = m_airp.r(a_option -> assetA(), m_ts[j]); 
                         double rB = m_birp.r(a_option -> assetB(), m_ts[j]);
                         
-                        double rateDiff = std::max<double>(rB-rA, 0);
+                        double rateDiff = std::max<double>(rB - rA, 0);
                     
                     
                         if(j < m_M - 1) {
                             integAB += rateDiff * tau;
-                            m_ES[j+1] = a_S0 * exp(integAB);
+                            m_ES[j + 1] = a_S0 * exp(integAB);
                             double sigma = a_diff->sigma(m_ES[j], m_ts[j]);
-                            m_VarS[j+1]  = m_VarS[j] + sigma * sigma * tau;
+                            m_VarS[j + 1]  = m_VarS[j] + sigma * sigma * tau;
                         }
                     }
                     // Upper Bound for S (the Lower Bound is 0):
@@ -76,17 +78,16 @@ namespace SiriusFM {
                     if(m_N > m_maxN) 
                         throw std::invalid_argument("N too large");
                     
-                    double* payOff = !isFwd ? m_grid + (m_M - 1) * m_N : nullptr;
+                    double* payOff = (!isFwd) ? m_grid + (m_M - 1) * m_N : nullptr;
                     
                     for(int i = 0; i < m_N; ++i) {
                         m_S[i] = double(i) * h; // again , low bounds is 0
-                        
-                    //create the payoff at t=T in the grid
-                    //nb: the grid is stored by-coloumn for better locality
                     
                     if (!isFwd) payOff[i] = a_option -> payoff(1, m_ts + (m_M - 1), m_S + i); 
-                    
+                    if(isFwd) m_grid[i] = 0.; 
                     }
+                    if(isFwd) m_grid[m_i0] = 1./h;
+                    
                     bool isNeumann = false;
                     double UBC = 0.;
                     double fa = isFwd ? 0 : payOff[0];
@@ -112,23 +113,23 @@ namespace SiriusFM {
                         double rateBj = m_birp.r(a_option -> assetB(), tj);
                         double C1 = (rateBj - rateAj) / (2 * h);
                         fj1[0] = fa;
-                        
-                        #pragma omp parralel for//#pragma acc loop copyin(fj[0:N]) copyout()
+                        //#pragma acc loop copyin(fj[0:N]) copyout()
+                        //#pragma omp parallel for
                         for (int i = 1; i <= m_N - 2; ++i) {
-                            double Si = m_S[i];
-                            double fjim1 = fj[i - 1];
-                            double fji = fj[i];
+                            double Si       = m_S[i];
+                            double fjim1    = fj[i - 1];
+                            double fji      = fj[i];
                             
-                            double fjip1 = fj[i + 1];
-                            double sigma = a_diff -> sigma(Si, tj);
+                            double fjip1    = fj[i + 1];
+                            double sigma    = a_diff -> sigma(Si, tj);
                             
                             double DfDt = 0.;
                             
                             if (isFwd) {
-                                double SiM    = m_S[i-1];
-                                double SiP    = m_S[i+1];
-                                double sigmaM = a_diff->sigma(SiM, tj);
-                                double sigmaP = a_diff->sigma(SiP, tj);
+                                double SiM    = m_S[i - 1];
+                                double SiP    = m_S[i + 1];
+                                double sigmaM = a_diff -> sigma(SiM, tj);
+                                double sigmaP = a_diff -> sigma(SiP, tj);
 
                                 DfDt = - C1 * (SiP * fjip1 - SiM * fjim1)
                                 + (sigmaP * sigmaP * fjip1 - 2 * sigma * sigma * fji 
@@ -136,7 +137,8 @@ namespace SiriusFM {
                             }
                             else DfDt = rateBj * fji - C1 * Si * (fjip1 - fjim1) - sigma * sigma/D2 *(fjip1 - 2 * fji + fjim1);
                             
-                            fj1[i] = fji - tau * DfDt;
+                            if(!isFwd) fj1[i] = fji - tau * DfDt;
+                            else fj1[i] = fji + tau * DfDt;
                         }
                         
                         fj1[m_N - 1] = (!isFwd && isNeumann) ? (fj1[m_N - 2] + UBC) : UBC;
@@ -164,25 +166,36 @@ namespace SiriusFM {
                     AProvider, 
                     BProvider,
                     AssetClassA, 
-                    AssetClassB>::GetPriceDeltaGamma() const 
+                    AssetClassB>::GetPriceDeltaGamma(Option<AssetClassA, AssetClassB> const* a_option) const 
                     {
                         if (m_M == 0 || m_N == 0)
                         throw std::runtime_error("RunBI first!");
 
                         assert(0 <= m_i0 && m_i0 < m_N);
-
+                        
                         double h     = m_S[1] - m_S[0];
-                        double px    = m_grid[m_i0];    // j=0
-                        double delta = 0;
-                        double gamma = 0;
+                        double px    = 0.;
+                        double delta = 0.;
+                        double gamma = 0.;
+                        if(!m_isFwd) {
+                        
+                        px  = m_grid[m_i0];    // j=0
+                        
                         if (0 < m_i0 && m_i0 <= m_N-2) {
-                            delta = (m_grid[m_i0+1] - m_grid[m_i0-1]) / (2*h);
-                            gamma = (m_grid[m_i0+1] - 2*m_grid[m_i0] + m_grid[m_i0-1]) / (h*h);
+                            delta = (m_grid[m_i0 + 1] - m_grid[m_i0-1]) / (2*h);
+                            gamma = (m_grid[m_i0 + 1] - 2 * m_grid[m_i0] + m_grid[m_i0 - 1]) / (h * h);
                         } else if (m_i0 == 0) delta = (m_grid[1]   - m_grid[0])   / h;    // gamma remains 0
                             else {
                                 assert(m_i0  == m_N-1);
                                 delta = (m_grid[m_N-1] - m_grid[m_N-2]) / h; // gamma remains 0
                             }
+                            
+                        }
+                        else {
+                            for (int i = 0; i < m_N; ++i) {
+                                px += (a_option -> payoff(1, m_ts, m_S + i)) * m_grid[(m_M - 1) * m_N + i] * h;
+                            }
+                        }
                         return std::make_tuple(px, delta, gamma);
                     }
                         

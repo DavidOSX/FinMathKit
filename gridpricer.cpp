@@ -51,16 +51,22 @@ int main(const int argc, const char* argv[])
   // Presto! 
   grid.RunBI<false>(opt, &diff, S0, t0, NS, tauMins);
   
-  auto   res   = grid.GetPriceDeltaGamma();
+  auto   res   = grid.GetPriceDeltaGamma(opt);
   
   double px    = get<0>(res);
   double delta = get<1>(res);
   double gamma = get<2>(res);
   
-  cout << " Px    = " << px 
+  cout << " Feynman-Kac:\n"
+       << " Price = " << px 
      << "\n Delta = " << delta 
      << "\n Gamma = " << gamma << endl;
-
+     
+  grid.RunBI<true>(opt, &diff, S0, t0, NS, tauMins);
+  res = grid.GetPriceDeltaGamma(opt);
+  px = get<0>(res);
+  cout << " Fokker-Planck:\n"
+       << " Price = " << px << endl;
 
   delete opt;
 	return 0;

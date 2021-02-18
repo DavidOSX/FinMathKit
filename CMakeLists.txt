@@ -1,5 +1,5 @@
 ###
-cmake_minimum_required (VERSION 2.6) 
+cmake_minimum_required (VERSION 3.0) 
 project(Foo LANGUAGES CXX)
 
                              #########
@@ -87,36 +87,36 @@ install(FILES ${HEADERS} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include)#
                  
 enable_testing()
 
-function(do_test1 NUM TARGET1 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9 ARG10)
-  add_test(Test${NUM}  ${TARGET1} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} )
+function(do_test1 TARGET ARG1 ARG2 ARG3 ARG4 ARG6 ARG7 ARG8 ARG9 )
+  add_test(pricer:Test1 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Call" ${ARG6} ${ARG7} ${ARG8} ${ARG9} false )
+  
+  add_test(pricer:Test2 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Put" ${ARG6} ${ARG7} ${ARG8} ${ARG9} false )
   #set_tests_properties(Test1 ...)
 endfunction(do_test1)
 
-function(do_test2 NUM TARGET2 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9 ARG10 ARG11)
-  add_test(Test${NUM}  ${TARGET2} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} ${ARG11} )
+function(do_test2 TARGET ARG1 ARG2 ARG3 ARG4 ARG6 ARG7 ARG8 ARG9 ARG10 )
+  add_test(hedger:Test1 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Call" ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} false )
+  
+  add_test(hedger:Test2 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Put" ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} false )
   #set_tests_properties(Test2 ...) 
 endfunction(do_test2)
 
-function(do_test3 NUM TARGET3 ARG1 ARG2 ARG3 ARG4 ARG5 ARG6 ARG7 ARG8 ARG9)
-  add_test(Test${NUM} ${TARGET3} ${ARG1} ${ARG2} ${ARG3} ${ARG4} ${ARG5} ${ARG6} ${ARG7} ${ARG8} ${ARG9} )
+function(do_test3 TARGET ARG1 ARG2 ARG3 ARG5 ARG6 ARG7 ARG8)
+  add_test(gridpricer:Test1 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Call" ${ARG5} ${ARG6} ${ARG7} ${ARG8} false )
+  
+  add_test(gridpricer:Test2 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Put" ${ARG5} ${ARG6} ${ARG7} ${ARG8} false )
+  
+  add_test(gridpricer:Test3 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Call" ${ARG5} ${ARG6} ${ARG7} ${ARG8} true )
+  
+  add_test(gridpricer:Test4 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Put" ${ARG5} ${ARG6} ${ARG7} ${ARG8} true )
   #set_tests_properties(Test3 ...)
 endfunction(do_test3)
 
-do_test1(1 ${CMAKE_CURRENT_SOURCE_DIR}/bin/pricer "DATA.txt" 0 0.25 100 "Call" 100 90 30 2048 false)
+do_test1(${CMAKE_CURRENT_SOURCE_DIR}/bin/pricer "DATA.txt" 0 0.25 100 100 90 30 2048)
 
-do_test1(2 ${CMAKE_CURRENT_SOURCE_DIR}/bin/pricer "DATA.txt" 0 0.25 100 "Put" 100 90 30 2048 false)
-                 
-do_test2(3 ${CMAKE_CURRENT_SOURCE_DIR}/bin/hedger "DATA.txt" 0 0.25 100 "Call" 100 90 0.01 30 2048 false)
+do_test2(${CMAKE_CURRENT_SOURCE_DIR}/bin/hedger "DATA.txt" 0 0.25 100 100 90 0.01 30 2048)
 
-do_test2(4 ${CMAKE_CURRENT_SOURCE_DIR}/bin/hedger "DATA.txt" 0 0.25 100 "Put" 100 90 0.01 30 2048 false)
-
-do_test3(5 ${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Call" 100 90 1024 5 false)
-
-do_test3(6 ${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Put" 100 90 1024 5 false)
-
-do_test3(7 ${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Call" 100 90 1024 5 true)
-
-do_test3(8 ${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 "Put" 100 90 1024 5 true)
+do_test3(${CMAKE_CURRENT_SOURCE_DIR}/bin/gridpricer "DATA.txt" 0.25 100 100 90 1024 5)
                  
 ##############################################
 

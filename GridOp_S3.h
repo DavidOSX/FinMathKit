@@ -79,7 +79,8 @@ namespace SiriusFM {
                     double      a_BFactor = 4.5
                    );
         
-        std::tuple<double, double, double> GetPriceDeltaGamma() const;
+    
+        std::tuple<double, double, double> GetPriceDeltaGamma(Option<AssetClassA, AssetClassB> const* a_option) const;
         
     };
 };
