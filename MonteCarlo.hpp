@@ -48,7 +48,7 @@ inline void MCEngine <Diffusion,
                           
                           double y0 = YearFrac(a_t0);
                         
-                          long P = 2*a_P;
+                          long P = 2 * a_P;
                           double y = y0; 
                           
                           if(L > m_MaxL) std::invalid_argument("too many steps");
