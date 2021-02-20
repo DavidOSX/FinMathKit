@@ -80,7 +80,7 @@ namespace SiriusFM {
                    );
         
     
-        std::tuple<double, double, double> GetPriceDeltaGamma(Option<AssetClassA, AssetClassB> const* a_option) const;
+        std::tuple<double, double, double> GetPriceDeltaGamma(Option<AssetClassA, AssetClassB> const* a_option, time_t a_t0) const;
         
     };
 };

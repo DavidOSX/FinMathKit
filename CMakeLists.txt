@@ -88,27 +88,37 @@ install(FILES ${HEADERS} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include)#
 enable_testing()
 
 function(do_test1 TARGET ARG1 ARG2 ARG3 ARG4 ARG6 ARG7 ARG8 ARG9 )
-  add_test(pricer:Test1 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Call" ${ARG6} ${ARG7} ${ARG8} ${ARG9} false )
+  add_test(pricer:Test1 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Call" ${ARG6} ${ARG7} ${ARG8} ${ARG9} "GBM" 0 )
   
-  add_test(pricer:Test2 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Put" ${ARG6} ${ARG7} ${ARG8} ${ARG9} false )
+  add_test(pricer:Test2 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Put" ${ARG6} ${ARG7} ${ARG8} ${ARG9} "GBM" 0 )
+  
+  add_test(pricer:Test3 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Call" ${ARG6} ${ARG7} ${ARG8} ${ARG9} "CEV" 0 )
+  
+  add_test(pricer:Test4 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Put" ${ARG6} ${ARG7} ${ARG8} ${ARG9} "CEV" 0 )
   #set_tests_properties(Test1 ...)
 endfunction(do_test1)
 
 function(do_test2 TARGET ARG1 ARG2 ARG3 ARG4 ARG6 ARG7 ARG8 ARG9 ARG10 )
-  add_test(hedger:Test1 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Call" ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} false )
+  add_test(hedger:Test1 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Call" ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} "GBM" 0 )
   
-  add_test(hedger:Test2 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Put" ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} false )
+  add_test(hedger:Test2 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Put" ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} "GBM" 0 )
+  
+  #add_test(hedger:Test3 ${TARGET} ${ARG1} ${ARG2} ${ARG3} ${ARG4} "Call" ${ARG6} ${ARG7} ${ARG8} ${ARG9} ${ARG10} "CEV" 0 )
   #set_tests_properties(Test2 ...) 
 endfunction(do_test2)
 
-function(do_test3 TARGET ARG1 ARG2 ARG3 ARG5 ARG6 ARG7 ARG8)
-  add_test(gridpricer:Test1 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Call" ${ARG5} ${ARG6} ${ARG7} ${ARG8} false )
+function(do_test3 TARGET ARG1 ARG2 ARG3 ARG5 ARG6 ARG7 ARG8 )
+  add_test(gridpricer:Test1 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Call" ${ARG5} ${ARG6} ${ARG7} ${ARG8} "GBM" 0 )
   
-  add_test(gridpricer:Test2 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Put" ${ARG5} ${ARG6} ${ARG7} ${ARG8} false )
+  add_test(gridpricer:Test2 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Put" ${ARG5} ${ARG6} ${ARG7} ${ARG8} "GBM" 0 )
   
-  add_test(gridpricer:Test3 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Call" ${ARG5} ${ARG6} ${ARG7} ${ARG8} true )
+  add_test(gridpricer:Test3 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Call" ${ARG5} ${ARG6} ${ARG7} ${ARG8} "GBM" 1 )
   
-  add_test(gridpricer:Test4 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Put" ${ARG5} ${ARG6} ${ARG7} ${ARG8} true )
+  add_test(gridpricer:Test4 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Put" ${ARG5} ${ARG6} ${ARG7} ${ARG8} "GBM" 1 )
+  
+  add_test(gridpricer:Test5 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Put" ${ARG5} ${ARG6} ${ARG7} ${ARG8} "CEV" 0 )
+  
+  add_test(gridpricer:Test6 ${TARGET} ${ARG1} ${ARG2} ${ARG3} "Put" ${ARG5} ${ARG6} ${ARG7} ${ARG8} "CEV" 1 )
   #set_tests_properties(Test3 ...)
 endfunction(do_test3)
 

@@ -166,7 +166,7 @@ namespace SiriusFM {
                     AProvider, 
                     BProvider,
                     AssetClassA, 
-                    AssetClassB>::GetPriceDeltaGamma(Option<AssetClassA, AssetClassB> const* a_option) const 
+                    AssetClassB>::GetPriceDeltaGamma(Option<AssetClassA, AssetClassB> const* a_option, time_t a_t0) const 
                     {
                         if (m_M == 0 || m_N == 0)
                         throw std::runtime_error("RunBI first!");
@@ -195,6 +195,7 @@ namespace SiriusFM {
                             for (int i = 0; i < m_N; ++i) {
                                 px += (a_option -> payoff(1, m_ts, m_S + i)) * m_grid[(m_M - 1) * m_N + i] * h;
                             }
+                            px *= m_birp.DF(a_option->assetB(), a_t0, a_option -> ExpirTime());
                         }
                         return std::make_tuple(px, delta, gamma);
                     }

@@ -27,7 +27,8 @@ protected:
 public: 
     
     virtual double payoff(long a_L, double const* a_t, double const* a_S) const = 0;
-    time_t ExpirTime() const {
+    
+    inline time_t ExpirTime() const {
         return m_expirTime;
     }
     inline AssetClassA assetA() const {

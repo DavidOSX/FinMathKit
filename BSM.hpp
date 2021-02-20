@@ -3,8 +3,9 @@
 #include <cassert>
 #include <algorithm>
 
-//namespace  {
+//namespace  SiriusFM{
     //BSM Pricer:
+    
     inline double Phi(double x) {
         
         return 0.5 * (1. + erf(x / M_SQRT2));

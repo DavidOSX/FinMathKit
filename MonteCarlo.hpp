@@ -40,7 +40,7 @@ inline void MCEngine <Diffusion,
                                  a_pathEval != nullptr);
                           
                           time_t Tsec = a_T - a_t0;
-                          int tau_sec = a_tau_min*60;
+                          int tau_sec = a_tau_min * 60;
                           
                           double tau = IntervalYearFrac(tau_sec);
                           long L = (Tsec % tau_sec == 0) ? Tsec/tau_sec : Tsec/tau_sec + 1;
@@ -54,7 +54,7 @@ inline void MCEngine <Diffusion,
                           if(L > m_MaxL) std::invalid_argument("too many steps");
                           
                           double stau = sqrt(tau);
-                           double tlast = (Tsec%tau_sec == 0)? tau :IntervalYearFrac(Tsec-(L - 2)*tau_sec);
+                           double tlast = (Tsec%tau_sec == 0)? tau : IntervalYearFrac(Tsec - (L - 2) * tau_sec);
                           //yT - y0 - double(L - 2)*tau;
                           assert(tlast <= tau && 0 < tlast);
                           double slast = sqrt(tlast);
@@ -101,7 +101,7 @@ inline void MCEngine <Diffusion,
                                   double y = m_ts[l - 1];
                                   if(a_isRN) {
                                       double delta_r = a_bp->r(a_B, y) - a_ap->r(a_A, y);
-                                      mu0 = delta_r * Sp0;//+
+                                      mu0 = delta_r * Sp0;
                                       mu1 = delta_r * Sp1;
                                       
                                     } else {
@@ -111,13 +111,13 @@ inline void MCEngine <Diffusion,
                                 double sigma0 = a_diff -> sigma(Sp0,y);
                                 double sigma1 = a_diff -> sigma(Sp1,y);
                                 double Z = nd(u);
-                                double Sn0, Sn1;
+                                double Sn0 = 0, Sn1 = 0;
                                 if(l == L - 1) {
-                                    Sn0 = Sp0 + mu0*tlast + sigma0*Z*slast;
-                                    Sn1 = Sp1 + mu1*tlast - sigma1*Z*slast;
+                                    Sn0 = Sp0 + mu0 * tlast + sigma0 * Z * slast;
+                                    Sn1 = Sp1 + mu1 * tlast - sigma1 * Z * slast;
                                 } else {
-                                    Sn0 = Sp0 + mu0*tau + sigma0*Z*stau;
-                                    Sn1 = Sp1 + mu1*tau - sigma1*Z*stau;
+                                    Sn0 = Sp0 + mu0 * tau + sigma0 * Z * stau;
+                                    Sn1 = Sp1 + mu1 * tau - sigma1 * Z * stau;
                                 }
                                 path0[l] = Sn0;
                                 path1[l] = Sn1;

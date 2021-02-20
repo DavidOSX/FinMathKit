@@ -22,7 +22,7 @@ inline std::tuple<double, double, double, double>
                                               ) 
                               {
                                 OHPathEval pathEval(a_option, &m_airp, &m_birp, a_deltaFunc, a_C0, a_deltaAcc);
-                                m_mce.template Simulate<true>(a_t0, a_option -> ExpirTime(), a_tauMins, a_P, m_useTimerSeed, m_diff, &m_airp, &m_birp, a_option->assetA(), a_option->assetB(), &pathEval);
+                                m_mce.template Simulate<false>(a_t0, a_option -> ExpirTime(), a_tauMins, a_P, m_useTimerSeed, m_diff, &m_airp, &m_birp, a_option->assetA(), a_option->assetB(), &pathEval);
                                 
                                 //m_mce.printPaths(m_diff -> GetStartPoint());
                                 
