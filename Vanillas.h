@@ -40,7 +40,7 @@ namespace SiriusFM {
                   AssetClassB    a_B,
                   double         a_K, 
                   time_t         a_Tdays,
-                  bool a_isAmerican):
+                  bool           a_isAmerican):
         Option<AssetClassA, AssetClassB>(a_A, a_B, a_Tdays, a_isAmerican, false),
         m_K(a_K)
         {

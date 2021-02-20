@@ -70,11 +70,11 @@ namespace SiriusFM {
                             {
                               if (m_rsA == nullptr) {
                                         m_rsA = new double[a_L];
-                                        for (long l = 0; l < a_L; ++l)          m_rsA[l] = m_airp -> r(m_option->assetA(), a_ts[l]);
+                                        for (long l = 0; l < a_L; ++l)   m_rsA[l] = m_airp -> r(m_option->assetA(), a_ts[l]);
                               }
                               if (m_rsB == nullptr) {
                                         m_rsB = new double[a_L];
-                                        for (long l = 0; l < a_L; ++l)          m_rsB[l] = m_birp -> r(m_option->assetB(), a_ts[l]);
+                                        for (long l = 0; l < a_L; ++l)   m_rsB[l] = m_birp -> r(m_option->assetB(), a_ts[l]);
                               }
                               for (long p = 0; p < a_PM; ++p) {
                 
@@ -89,23 +89,25 @@ namespace SiriusFM {
                                                   double t    = a_ts[l];
                     
                                                   //manage money account
-                                                  if(l > 0) {
-                                                            double tau = t - a_ts[l - 1];
-                                                            double Sp = path[l - 1];
-                                                            M += M * tau * m_rsB[l - 1];
+                                             if(l > 0) {
+                                                double tau = t - a_ts[l - 1];
+                                                double Sp = path[l - 1];
+                                                M += M * tau * m_rsB[l - 1];
                         
-                                                            M += Sp * tau * m_rsA[l - 1];
+                                                M += Sp * tau * m_rsA[l - 1];
                         
-                                                  }
-                                        double deltaN = (*m_deltaFunc)(St, t);
-                                        // also deltaN changes sign as we long the option
-                                        deltaN = - round(deltaN / m_deltaAcc) * m_deltaAcc;
-                                        if (deltaN != delta) {
+                                             }
+                                            if(l < a_L - 1) {
+                                            double deltaN = (*m_deltaFunc)(St, t);
+                                            // also deltaN changes sign as we long the option
+                                            deltaN = - round(deltaN / m_deltaAcc) * m_deltaAcc;
+                                                if (deltaN != delta) {
                                                   // re-hedge
                                                   M -= (deltaN - delta) * St;
                                                   delta = deltaN;
-                                        }
-                              }
+                                                }
+                                            }
+                                      }
                 
                               double PnL = M + delta * path[a_L - 1] + m_option -> payoff(a_L, a_ts, path);
             

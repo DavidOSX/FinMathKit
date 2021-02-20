@@ -8,10 +8,13 @@
 using namespace SiriusFM;
 using namespace std;
 
+
+constexpr double beta = 0.5; 
+
 int main(const int argc, const char* argv[]) {
     
     
-    if(argc < 12) {
+    if(argc < 11) {
         cerr << "not enough params\n" << endl;
         cerr << "params: \"name file with rates\" mu, sigma, S0, Call/Put, K, Tdays, deltaAcc, tau_mins, P, isAmerican\n";
         return 1;
@@ -36,18 +39,23 @@ int main(const int argc, const char* argv[]) {
     double deltaAcc         = atof(argv[8]);
     int tau_mins            = atoi(argv[9]);
     long P                  = atol(argv[10]);
-    bool isAmerican         = bool(atoi(argv[11]));
+    char const* diffType    = argv[11];
+    bool isAmerican         = bool(atoi(argv[12]));
+    
     
     time_t t0               = time(nullptr);
     time_t T                = t0 + T_days * 86400;
     double Ty               = 1970. + double(T_days)/365.25;
     double TTE              = IntervalYearFrac(T - t0);
     
-    OptionFX const* opt = nullptr;
-    Diffusion_GBM diff = Diffusion_GBM(mu, sigma, s0);
+    Diffusion *diff = nullptr;
+    if (strcmp(diffType, "GBM") == 0)  
+         diff = new Diffusion_GBM(mu, sigma, s0);
+    else if (strcmp(diffType, "CEV") == 0) diff = new Diffusion_CEV(mu, sigma, beta, s0);
+        else throw invalid_argument("bad diffusion type");
     
     
-    MCOptionHedger<decltype(diff), IRPConst, IRPConst, decltype(c1), decltype(c2)> hed(&diff, argv[1], argv[1], true);
+    MCOptionHedger<Diffusion, IRPConst, IRPConst, decltype(c1), decltype(c2)> hed(diff, argv[1], argv[1], true);
     
     decltype(hed)::DeltaFunc const* deltaFunc = nullptr;
     
@@ -69,17 +77,19 @@ int main(const int argc, const char* argv[]) {
         
     double C0 = 0.;
     
-    
+    OptionFX const* opt = nullptr;
     if(strcmp(optionType, "Call") == 0) {
         opt = new CallOptionFX(c1, c2, K, T, isAmerican);
         C0 = BSMPxCall(s0, K, TTE, rateA, rateB, sigma); 
         deltaFunc = &deltaCall;
     }
-    else {
+    else if (strcmp(optionType, "Put") == 0) {
         opt = new PutOptionFX(c1, c2, K, T, isAmerican);
         C0 = BSMPxPut(s0, K, TTE, rateA, rateB, sigma); 
         deltaFunc = &deltaPut;
     } 
+    else throw invalid_argument("bad option type");
+    
     
   
     auto res = hed.SimulateHedging(opt, t0, C0, deltaFunc, deltaAcc, tau_mins, P);
@@ -96,7 +106,7 @@ int main(const int argc, const char* argv[]) {
        << "\n Min[PnL] = " << MinPnL 
        << "\n Max[PnL] = " << MaxPnL << endl;
     
-    
+    delete diff;
     delete opt;
     
     
