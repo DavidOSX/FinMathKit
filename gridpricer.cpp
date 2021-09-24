@@ -38,7 +38,7 @@ int main(const int argc, const char* argv[])
     Diffusion *diff = nullptr;
 	if (strcmp(diffType, "GBM") == 0)  
         diff = new Diffusion_GBM(0., sigma, S0);
-    else if (strcmp(diffType, "CEV") == 0) diff = new Diffusion_CEV(0., sigma, beta, S0);
+    else if (strcmp(diffType, "CEV") == 0) diff = new Diffusion_CEV(0., sigma, 0.5, S0);
         else throw invalid_argument("bad diffusion type");     
 
   
