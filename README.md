@@ -7,7 +7,7 @@ Training project on financial math (financial math event in Sirius)
    2) Delta-hedging also based on Monte Carlo simulation (GBM model only, FIXIT)
    3) Pricer via numerical solution of PDEs (Feynman-Kac and Fokker-Planck)
     
-## Installing and Testing
+## Installation and Testing
 
     $ install git
     $ install cmake
