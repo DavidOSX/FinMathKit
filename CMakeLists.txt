@@ -6,9 +6,8 @@ project(Foo LANGUAGES CXX)
 #########################   #Setting#   ##################################
                            #########   
                     
-set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_CXX_COMPILER "g++")
 #set(CMAKE_CXX_COMPILER "nvc++")
-#set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-10")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O2")
 
