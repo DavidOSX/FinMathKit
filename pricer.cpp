@@ -47,7 +47,7 @@ int main(const int argc, const char* argv[]) {
     Diffusion *diff = nullptr;
     if (strcmp(diffType, "GBM") == 0)  
          diff = new Diffusion_GBM(mu, sigma, s0);
-    else if (strcmp(diffType, "CEV") == 0)  diff = new Diffusion_CEV(mu, sigma, beta, s0);
+    else if (strcmp(diffType, "CEV") == 0)  diff = new Diffusion_CEV(mu, sigma, 0.5, s0);
         else throw invalid_argument("bad diffusion type");//if (strcmp(diffType, "Lipton") == 0) Lipton(mu, s);
     
     
