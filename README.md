@@ -2,10 +2,9 @@
 Research project on financial math (option pricing, hedging, interest rate, etc...)
 
 ## Includes
-
-   1) Pricer for european option via Monte Carlo simulation (GBM model, CEV model + support risk-neutral measure)
-   2) Delta-hedging also based on Monte Carlo simulation (GBM model only, FIXIT)
-   3) Pricer via numerical solution of PDEs (Feynman-Kac and Fokker-Planck)
+1. Pricer for european option via Monte Carlo simulation (GBM model, CEV model + support risk-neutral measure)
+2. Delta-hedging also based on Monte Carlo simulation (GBM model only, FIXIT)
+3. Pricer via numerical solution of PDEs (Feynman-Kac and Fokker-Planck)
 
 ## Requirements
 
